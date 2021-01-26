@@ -6,6 +6,7 @@ use App\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Notifications\Messages\MailMessage;
 use JWTAuth;
 use Tymon\JWTAuth\Exceptions\JWTException;
 
