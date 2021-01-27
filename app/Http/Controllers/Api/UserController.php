@@ -87,14 +87,10 @@ class UserController extends Controller
 		}
 
 		$message = 'Hi ' . $data['email'];
-		$message .= '
-			Geeeting from Stoneridge. Your account is created on the Stoneridge Tender Bond Portal.\n
-			Click on below link to verify your email and change password.\n
-			Temp password:
-		';
-
-		$message .= $password . '\n';
-		$message .= 'Best Regards.\nStoneridege Team';
+		$message .= "Geeeting from Stoneridge. Your account is created on the Stoneridge Tender Bond Portal.\r\n";
+		$message .= "Click on below link to verify your email and change password.\r\n";
+		$message .= "Temp password: " . $password . "\r\n";
+		$message .= "Best Regards.\r\nStoneridege Team";
 
 		$headers = "From: admin@stoneridge.com";
 
