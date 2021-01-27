@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { withRouter } from 'react-router-dom';
 import {
   Modal, ModalHeader, ModalBody, ModalFooter,
-  Label, Input, Button
+  FormGroup, Label, Input, Button
 } from 'reactstrap';
 
 import Api from '../../apis/app';
@@ -17,6 +17,7 @@ class Client extends Component {
     this.state = {
       clients: [],
       showModal: false,
+      user_type: 'A',
       email: '',
       legal: '',
       validate: true,
@@ -51,7 +52,7 @@ class Client extends Component {
   }
 
   async addClient() {
-    const { email, legal } = this.state;
+    const { user_type, email, legal } = this.state;
 
     const re = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
     const validate = re.test(String(email).toLowerCase());
@@ -64,7 +65,7 @@ class Client extends Component {
       const params = {
         email,
         legal,
-        user_type: 'N'
+        user_type
       }
 
       const data = await Api.post('register', params);
@@ -103,6 +104,7 @@ class Client extends Component {
     const {
       clients,
       showModal,
+      user_type,
       email,
       legal,
       validate,
@@ -146,7 +148,29 @@ class Client extends Component {
                 <h4 className="text-danger text-center">{errMsg}</h4>
               )
             }
-            <Label>Normal User</Label>
+            <h6 className="mb-3">User Type</h6>
+            <FormGroup check inline>
+              <Label check>
+                <Input
+                  type="radio"
+                  name="radio2"
+                  checked={user_type == 'A'}
+                  onChange={() => this.setState({user_type: 'A'})}
+                />
+                {' '}Admin User
+              </Label>
+            </FormGroup>
+            <FormGroup check inline>
+              <Label check>
+                <Input
+                  type="radio"
+                  name="radio1"
+                  checked={user_type == 'N'}
+                  onChange={() => this.setState({user_type: 'N'})}
+                />
+                {' '}Normal User
+              </Label>
+            </FormGroup>
             <hr />
             {
               validate ? (

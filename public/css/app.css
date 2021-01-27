@@ -58250,10 +58250,6 @@ body .add-client .modal-content .modal-header .close {
   opacity: 1;
 }
 
-body .add-client .modal-content .modal-body hr {
-  margin-top: 0;
-}
-
 body .add-client .modal-content .modal-body input[type=text] {
   border: none;
   border-bottom: 1px solid #ced4da;
