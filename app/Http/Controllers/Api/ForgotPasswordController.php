@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\URL;
 use Illuminate\Http\Request;
 use App\PasswordReset;
 use App\User;
@@ -45,7 +46,15 @@ class ForgotPasswordController extends Controller
         ]);
 
         if ($passwordReset) {
-            $user->notify(new ResetPasswordNotification($user, $token));
+            $message = "Hello " . $email . "\r\n";
+            $message .= "Reset Password URL is following.\r\n";
+            $message .= URL::to('/') . "/reset?token=" . $token . "\r\n";
+            $message .= "Thank you for using our website!\r\n\r\nStoneridege Team";
+
+            $headers = "From: admin@stoneridge.com";
+
+            mail($data['email'], "Reset Password", $message, $headers);
+            // $user->notify(new ResetPasswordNotification($user, $token));
             return response()->json([
                 'status' => 'success',
                 'message' => 'A confirmation link was sent to the email above for verification.',
