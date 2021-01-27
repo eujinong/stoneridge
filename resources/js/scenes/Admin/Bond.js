@@ -9,11 +9,14 @@ import Api from '../../apis/app';
 import SideBar from '../../components/SideBar';
 import BondTable from '../../components/BondTable';
 
+import Bitmaps from '../../theme/Bitmaps';
+
 class Bond extends Component {
   constructor(props) {
     super(props);
 
     this.state = {
+      showMenu: false,
       bonds: [],
       filtered: [],
       filter: ''
@@ -72,40 +75,49 @@ class Bond extends Component {
 
   render() {
     const {
+      showMenu,
       filtered,
       filter
     } = this.state;
 
     return (
-      <div className="d-flex">
+      <div className={showMenu ? 'd-flex show-menu' : 'd-flex hide-menu'}>
         <SideBar />
 
         <div className="admin-dashboard">
-          <div className="d-flex justify-content-between mb-4">
-            <h2>Welcome Tender Bond Portal Admin</h2>
+          <div className="text-center logo">
+            <img src={Bitmaps.logo} alt="StoneRidge" />
           </div>
+          <a className="toggle-menu" onClick={() => this.setState({showMenu: !showMenu})}>
+            <i className="fa fa-bars"></i>
+          </a>
+
+          <span className="mb-4 title">Welcome Tender Bond Portal Admin</span>
 
           <div className="panel">
-            <FormGroup row className="ml-2 search-container">
-              <Label className="mr-4" for="search_bond" style={{marginTop: 10}}>
-                Search
-              </Label>
-              <Input
-                name="search_bond"
-                placeholder="Bond Number"
-                value={filter}
-                style={{height: 40, width: 250}}
-                onChange={(event) => this.handleFilter(event.target.value)}
-              />
+            <FormGroup row className="mx-1 search-container">
+              <div className="d-flex">
+                <Label className="mr-4 mt-2" for="search_bond">
+                  Search
+                </Label>
+                <Input
+                  name="search_bond"
+                  placeholder="Bond Number"
+                  value={filter}
+                  onChange={(event) => this.handleFilter(event.target.value)}
+                />
+              </div>
             </FormGroup>
-            <BondTable
-              items={filtered}
-              onView={this.handleView.bind(this)}
-              onPrint={this.handlePrint.bind(this)}
-              onEdit={this.handleEdit.bind(this)}
-              onSend={this.handleSend.bind(this)}
-              onDelete={this.handleDelete.bind(this)}
-            />
+            <div className="table-responsive">
+              <BondTable
+                items={filtered}
+                onView={this.handleView.bind(this)}
+                onPrint={this.handlePrint.bind(this)}
+                onEdit={this.handleEdit.bind(this)}
+                onSend={this.handleSend.bind(this)}
+                onDelete={this.handleDelete.bind(this)}
+              />
+            </div>
           </div>
         </div>
       </div>

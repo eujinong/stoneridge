@@ -2,9 +2,8 @@ body {
   .admin-sidebar {
     box-shadow: 5px 0px 50px 0px;
     color: $gray-600;
-    float: left;
     height: 100vh;
-    padding: 5px 0;
+    padding: 10px 0;
     width: 280px;
     z-index: 2;
 
@@ -56,11 +55,28 @@ body {
     padding: 20px 35px;
     width: 100%;
 
+    .logo {
+      display: none;
+    }
+
+    .toggle-menu {
+      display: none;
+    }
+
+    .title {
+      font-size: 1.8em;
+    }
+
     .panel {
       background-color: #FFFFFF;
       border: 1px solid #CCCCCC;
       border-radius: 5px;
       padding: 20px;
+
+      .search-container {
+        display: flex;
+        justify-content: space-between;
+      }
 
       .ui.sortable.table {
         thead th {
@@ -77,6 +93,64 @@ body {
             padding: 5px 15px;
           }
         }
+      }
+    }
+  }
+
+  @media screen and (max-width: 640px) {
+    .show-menu {
+      .admin-sidebar {
+        background-color: #FFFFFF;
+        left: 0;
+        position: absolute;
+        transition: left 0.8s;
+      }
+    }
+  
+    .hide-menu {
+      .admin-sidebar {
+        background-color: #FFFFFF;
+        box-shadow: none;
+        left: -280px;
+        position: absolute;
+        transition: left 0.4s;
+      }
+    }
+
+    .admin-dashboard {
+      padding: 10px;
+
+      .logo {
+        display: block;
+      }
+
+      .toggle-menu {
+        background-color: white;
+        border-radius: 18px;
+        box-shadow: 0px 0px 3px 1px;
+        color: black;
+        cursor: pointer;
+        display: block;
+        float: right;
+        font-size: 18px;
+        padding: 4px 10px;
+        width: 36px;
+      }
+
+      .title {
+        font-size: 1.5em;
+      }
+
+      .panel {
+        margin-top: 15px;
+      }
+    }
+  }
+
+  @media screen and (max-width: 400px) {
+    .admin-dashboard {
+      .title {
+        font-size: 1.2em;
       }
     }
   }

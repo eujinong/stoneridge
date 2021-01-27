@@ -132,7 +132,7 @@ class BondTable extends Component {
     } = this.state;
 
     return (
-      <Table sortable celled selectable unstackable>
+      <Table sortable celled selectable unstackable singleLine>
         <Table.Header>
           <Table.Row>
             <Table.HeaderCell
