@@ -21,6 +21,7 @@ Route::namespace('Api')->group(function () {
 
     Route::group(['middleware' => ['jwt.verify']], function () {
         Route::get('clients', 'UserController@clients');
-        Route::post('register', 'UserController@store');
+        Route::post('add-user', 'UserController@store');
+        Route::put('update-user', 'UserController@update');
     });
 });

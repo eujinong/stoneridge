@@ -111,14 +111,6 @@ class DataTable extends Component {
     });
   }
 
-  handleFilter(event) {
-    this.setState({
-      filter: event.target.value
-    });
-
-    this.props.onFilter(event.target.value);
-  }
-
   render() {
     const {
       onSelect,
@@ -126,7 +118,6 @@ class DataTable extends Component {
     } = this.props;
 
     const {
-      filter,
       column,
       direction,
       data,
@@ -204,7 +195,14 @@ class DataTable extends Component {
                     }
                   </Table.Cell>
                   <Table.Cell className="text-center">
-                    <a className="btn btn-primary pt-2 px-4">EDIT</a>
+                    <a
+                      className="btn btn-primary pt-2 px-4"
+                      style={{textDecoration: 'underline'}}
+                      onClick={() => onSelect(item.id)}
+                    >
+                      <i className="fa fa-pencil mr-2"></i>
+                      EDIT
+                    </a>
                   </Table.Cell>
                 </Table.Row>
               ))
@@ -256,7 +254,6 @@ class DataTable extends Component {
 }
 
 DataTable.defaultProps = {
-  onFilter: () => {},
   onSelect: () => {}
 };
 

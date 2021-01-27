@@ -115,6 +115,24 @@ class UserController extends Controller
 			'clients' => $clients
 		], 200);
 	}
+
+	public function update(Request $request)
+	{
+		$data = $request->all();
+
+		User::where('email', $data['email'])
+				->update(array(
+					'legal' => $data['legal'],
+					'active' => $data['active']
+				));
+
+		$clients = User::where('legal', '!=', 'superadmin')->orderBy('id', 'DESC')->get();
+
+		return response()->json([
+			'status' => 'success',
+			'clients' => $clients
+		], 200);
+	}
 	
 	public function clients()
 	{

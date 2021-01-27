@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { withRouter } from 'react-router-dom';
 import {
   Modal, ModalHeader, ModalBody, ModalFooter,
-  FormGroup, Label, Input, Button
+  FormGroup, Label, Input, Button, CustomInput
 } from 'reactstrap';
 
 import Api from '../../apis/app';
@@ -18,6 +18,8 @@ class Client extends Component {
       clients: [],
       filtered: [],
       filter: '',
+      editable: false,
+      editItem: [],
       showModal: false,
       user_type: 'A',
       email: '',
@@ -87,7 +89,7 @@ class Client extends Component {
         user_type
       }
 
-      const data = await Api.post('register', params);
+      const data = await Api.post('add-user', params);
       const { response, body } = data;
       switch (response.status) {
         case 200:
@@ -105,6 +107,7 @@ class Client extends Component {
 
           this.setState({
             clients,
+            filtered: clients,
             showModal: false
           });
           break;
@@ -119,10 +122,59 @@ class Client extends Component {
     }
   }
 
+  async handleEditModal(id) {
+    const { clients } = this.state;
+
+    let editItem = clients.filter(item => item.id == id)[0];
+    
+    this.setState({
+      editable: true,
+      editItem: {...editItem}
+    });
+  }
+
+  async updateClient() {
+    const { editItem } = this.state;
+
+    const params = {
+      email: editItem.email,
+      legal: editItem.legal,
+      active: editItem.active
+    }
+
+    const data = await Api.put('update-user', params);
+      const { response, body } = data;
+      switch (response.status) {
+        case 200:
+          const clients = body.clients;
+          for (let i = 0; i < clients.length; i++) {
+            let id = '' + clients[i].id;
+            
+            let str = '';
+            for (let j = 0; j < 5 - id.length; j++) {
+              str += '0';
+            }
+
+            clients[i].id = str + id;
+          }
+
+          this.setState({
+            clients,
+            filtered: clients,
+            editable: false
+          });
+          break;
+        default:
+          break;
+      }
+  }
+
   render() {
     const {
       filtered,
       filter,
+      editable,
+      editItem,
       showModal,
       user_type,
       email,
@@ -148,7 +200,9 @@ class Client extends Component {
 
           <div className="panel">
             <FormGroup row className="ml-2 search-container">
-              <Label className="mt-2 mr-4" for="search_name">Search</Label>
+              <Label className="mr-4" for="search_name" style={{marginTop: 10}}>
+                Search
+              </Label>
               <Input
                 name="search_name"
                 placeholder="Email or Legal Name"
@@ -159,6 +213,7 @@ class Client extends Component {
             </FormGroup>
             <ClientTable
               items={filtered}
+              onSelect={this.handleEditModal.bind(this)}
             />
           </div>
         </div>
@@ -231,6 +286,83 @@ class Client extends Component {
               color="primary"
               disabled={email == '' || legal == ''}
               onClick={this.addClient.bind(this)}
+            >
+              Save
+            </Button>
+          </ModalFooter>
+        </Modal>
+
+        <Modal
+          className="add-client"
+          isOpen={editable}
+          centered={true}
+          size="md"
+        >
+          <ModalHeader toggle={() => {this.setState({editable: false})}}>
+            Edit Client
+          </ModalHeader>
+          <ModalBody>
+            <h6 className="mb-3">User Type</h6>
+            <FormGroup check inline>
+              <Label check>
+                <Input type="radio" checked={editItem.user_type == 'A'} disabled />
+                {' '}Admin User
+              </Label>
+            </FormGroup>
+            <FormGroup check inline>
+              <Label check>
+                <Input type="radio" checked={editItem.user_type == 'N'} disabled />
+                {' '}Normal User
+              </Label>
+            </FormGroup>
+            <hr />
+            <FormGroup>
+              <Label>Email</Label>
+              <Input type="text" value={editItem.email} disabled />
+            </FormGroup>
+            <FormGroup>
+              <Label>Legal Name</Label>
+              <Input
+                type="text"
+                value={editItem.legal}
+                onChange={(val) => {
+                  let { editItem } = this.state;
+                  editItem.legal = val.target.value;
+
+                  this.setState({
+                    editItem
+                  });
+                }}
+              />
+            </FormGroup>
+            <FormGroup>
+              <CustomInput
+                type="switch"
+                id="status"
+                label="Status"
+                checked={editItem.active}
+                onChange={(val) => {
+                  let { editItem } = this.state;
+                  editItem.active = val.target.checked ? 1 : 0;
+
+                  this.setState({
+                    editItem
+                  });
+                }}
+              />
+            </FormGroup>
+          </ModalBody>
+          <ModalFooter>
+            <Button
+              color="default"
+              onClick={() => {this.setState({editable: false})}}
+            >
+              Cancel
+            </Button>
+            <Button
+              color="primary"
+              disabled={editItem.legal == ''}
+              onClick={this.updateClient.bind(this)}
             >
               Save
             </Button>
