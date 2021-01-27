@@ -83,7 +83,7 @@ class UserController extends Controller
 		$characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
 
 		$password = '';
-		for ($i = 0; $i < 5; $i++) {
+		for ($i = 0; $i < 6; $i++) {
 			$password .= $characters[rand(0, 61)];
 		}
 
