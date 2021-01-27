@@ -19,6 +19,7 @@ class SideBar extends Component {
 
   async handleLogout() {
     await this.props.logout();
+    this.props.history.push('/');
   }
 
   render() {
@@ -46,7 +47,7 @@ class SideBar extends Component {
               </NavLink>
             </NavItem>
             <NavItem>
-              <a className="nav-link" href="" onClick={this.handleLogout}>
+              <a className="nav-link" onClick={this.handleLogout}>
                 <i className="mr-2 fa fa-sign-out"></i> Log out
               </a>
             </NavItem>
