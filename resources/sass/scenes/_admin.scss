@@ -19,16 +19,16 @@ body {
           box-shadow: 0px 0px 3px 1px;
           float: left;
           margin: 5px 15px;
-          padding: 2px 10px;
           width: 100%;
 
           .nav-link {
             color: #000000;
             font-size: 16px;
-            padding: 5px;
+            padding: 5px 10px;
 
             &.active {
-              color: #006a51;
+              background-color: #0062cc;
+              color: #FFFFFF;
               font-weight: bold;
             }
           }
@@ -63,7 +63,7 @@ body {
 
       .ui.sortable.table {
         thead th {
-          color: #3490dc;
+          color: #0062cc;
         }
 
         tbody td {

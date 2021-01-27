@@ -58231,13 +58231,23 @@ body {
   background-color: #FFFFFF;
 }
 
+body .btn-primary {
+  background-color: #0062cc;
+  border-color: #0062cc;
+}
+
 body .add-client .modal-content {
   border: none;
 }
 
 body .add-client .modal-content .modal-header {
-  background-color: #3490dc;
+  background-color: #0062cc;
   color: #FFFFFF;
+}
+
+body .add-client .modal-content .modal-header .close {
+  color: #FFFFFF;
+  opacity: 1;
 }
 
 body .add-client .modal-content .modal-body hr {
@@ -58279,18 +58289,18 @@ body .admin-sidebar .nav .navbar .nav-item {
   box-shadow: 0px 0px 3px 1px;
   float: left;
   margin: 5px 15px;
-  padding: 2px 10px;
   width: 100%;
 }
 
 body .admin-sidebar .nav .navbar .nav-item .nav-link {
   color: #000000;
   font-size: 16px;
-  padding: 5px;
+  padding: 5px 10px;
 }
 
 body .admin-sidebar .nav .navbar .nav-item .nav-link.active {
-  color: #006a51;
+  background-color: #0062cc;
+  color: #FFFFFF;
   font-weight: bold;
 }
 
@@ -58321,7 +58331,7 @@ body .admin-dashboard .panel {
 }
 
 body .admin-dashboard .panel .ui.sortable.table thead th {
-  color: #3490dc;
+  color: #0062cc;
 }
 
 body .admin-dashboard .panel .ui.sortable.table tbody td {

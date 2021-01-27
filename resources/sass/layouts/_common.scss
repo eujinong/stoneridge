@@ -1,13 +1,23 @@
 body {
   background-color: #FFFFFF;
 
+  .btn-primary {
+    background-color: #0062cc;
+    border-color: #0062cc;
+  }
+
   .add-client {
     .modal-content {
       border: none;
 
       .modal-header {
-        background-color: #3490dc;
+        background-color: #0062cc;
         color: #FFFFFF;
+
+        .close {
+          color: #FFFFFF;
+          opacity: 1;
+        }
       }
 
       .modal-body {
