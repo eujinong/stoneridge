@@ -91,7 +91,7 @@ class UserController extends Controller
 		$message .= "Geeeting from Stoneridge.\r\n";
 		$message .= "Your account is created on the Stoneridge Tender Bond Portal.\r\n";
 		$message .= "Click on below link to verify your email and change password.\r\n";
-		$message .= URL::to('/') . "authemail?email=" . $data['email'] . "\r\n";
+		$message .= URL::to('/') . "/authemail?email=" . $data['email'] . "\r\n";
 		$message .= "Temp password: " . $password . "\r\n\r\n";
 		$message .= "Best Regards.\r\n\r\nStoneridege Team";
 
