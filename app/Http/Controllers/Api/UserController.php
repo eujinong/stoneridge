@@ -82,15 +82,17 @@ class UserController extends Controller
 		$characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
 
 		$password = '';
-		for ($i = 0; $i < 6; $i++) {
+		for ($i = 0; $i < 5; $i++) {
 			$password .= $characters[rand(0, 61)];
 		}
 
-		$message = 'Hi ' . $data['email'];
-		$message .= "Geeeting from Stoneridge. Your account is created on the Stoneridge Tender Bond Portal.\r\n";
+		$message = "Hi " . $data['email'] . "\r\n";
+		$message .= "Geeeting from Stoneridge.\r\n";
+		$message .= "Your account is created on the Stoneridge Tender Bond Portal.\r\n";
 		$message .= "Click on below link to verify your email and change password.\r\n";
-		$message .= "Temp password: " . $password . "\r\n";
-		$message .= "Best Regards.\r\nStoneridege Team";
+		$message .= URL::to('/') . "authemail?email=" . $data['email'] . "\r\n";
+		$message .= "Temp password: " . $password . "\r\n\r\n";
+		$message .= "Best Regards.\r\n\r\nStoneridege Team";
 
 		$headers = "From: admin@stoneridge.com";
 
@@ -102,7 +104,7 @@ class UserController extends Controller
 			'user_type' => $data['user_type'],
 			'last_bond_number' => 0,
 			'legal' => $data['legal'],
-			'active' => 1
+			'active' => 0
 		));
 
 		$clients = User::where('legal', '!=', 'superadmin')->orderBy('id', 'DESC')->get();
