@@ -37,29 +37,31 @@ class ForgotPasswordController extends Controller
         $email = $request->input('email');
         $user = User::where('email', $email)->first();
 
-        PasswordReset::destroy($email);
+        if ($user) {
+            PasswordReset::destroy($email);
 
-        $token = md5(time() . $email);
-        $passwordReset = PasswordReset::create([
-            'email' => $email,
-            'token' => $token
-        ]);
+            $token = md5(time() . $email);
+            $passwordReset = PasswordReset::create([
+                'email' => $email,
+                'token' => $token
+            ]);
 
-        if ($passwordReset) {
-            $message = "Hello " . $email . "\r\n";
-            $message .= "Reset Password URL is following.\r\n";
-            $message .= URL::to('/') . "/reset?token=" . $token . "\r\n";
-            $message .= "Thank you for using our website!\r\n\r\nStoneridege Team";
+            if ($passwordReset) {
+                $message = "Hello " . $email . "\r\n";
+                $message .= "Reset Password URL is following.\r\n";
+                $message .= URL::to('/') . "/reset?token=" . $token . "\r\n";
+                $message .= "Thank you for using our website!\r\n\r\nStoneridege Team";
 
-            $headers = "From: admin@stoneridge.com";
+                $headers = "From: admin@stoneridge.com";
 
-            mail($data['email'], "Reset Password", $message, $headers);
-            // $user->notify(new ResetPasswordNotification($user, $token));
-            return response()->json([
-                'status' => 'success',
-                'message' => 'A confirmation link was sent to the email above for verification.',
-                'data' => []
-            ], 200);
+                mail($email, "Reset Password", $message, $headers);
+                // $user->notify(new ResetPasswordNotification($user, $token));
+                return response()->json([
+                    'status' => 'success',
+                    'message' => 'A confirmation link was sent to the email above for verification.',
+                    'data' => []
+                ], 200);
+            }
         }
 
         return response()->json([
