@@ -340,7 +340,7 @@ class Client extends Component {
                 type="switch"
                 id="status"
                 label="Status"
-                checked={editItem.active}
+                checked={editItem.active == 1 ? true : false}
                 onChange={(val) => {
                   let { editItem } = this.state;
                   editItem.active = val.target.checked ? 1 : 0;
