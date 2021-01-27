@@ -6,7 +6,6 @@ use App\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
-use Illuminate\Notifications\Messages\MailMessage;
 use JWTAuth;
 use Tymon\JWTAuth\Exceptions\JWTException;
 
@@ -87,7 +86,8 @@ class UserController extends Controller
 			$password .= $characters[rand(0, 61)];
 		}
 
-		$message = '
+		$message = 'Hi ' . $data['email'];
+		$message .= '
 			Geeeting from Stoneridge. Your account is created on the Stoneridge Tender Bond Portal.\n
 			Click on below link to verify your email and change password.\n
 			Temp password:
@@ -96,9 +96,9 @@ class UserController extends Controller
 		$message .= $password . '\n';
 		$message .= 'Best Regards.\nStoneridege Team';
 
-		(new MailMessage)
-            ->greeting("Hi " . $data['email'])
-            ->line($message);
+		$headers = "From: admin@stoneridge.com";
+
+    mail($data['email'], "Welcome to StoneRidge", $message, $headers);
 
 		User::create(array(
 			'email' => $data['email'],
