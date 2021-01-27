@@ -16,6 +16,8 @@ class Client extends Component {
 
     this.state = {
       clients: [],
+      filtered: [],
+      filter: '',
       showModal: false,
       user_type: 'A',
       email: '',
@@ -23,6 +25,8 @@ class Client extends Component {
       validate: true,
       errMsg: ''
     }
+
+    this.handleFilter = this.handleFilter.bind(this)
   }
 
   async componentDidMount() {
@@ -43,12 +47,27 @@ class Client extends Component {
         }
 
         this.setState({
-          clients
+          clients,
+          filtered: clients
         });
         break;
       default:
         break;
     }
+  }
+
+  handleFilter(str) {
+    const { clients } = this.state;
+
+    let filtered = clients.filter(
+      member => member.email.toUpperCase().includes(str.toUpperCase()) || 
+      member.legal.toUpperCase().includes(str.toUpperCase())
+    );
+
+    this.setState({
+      filtered,
+      filter: str
+    });
   }
 
   async addClient() {
@@ -102,7 +121,8 @@ class Client extends Component {
 
   render() {
     const {
-      clients,
+      filtered,
+      filter,
       showModal,
       user_type,
       email,
@@ -127,8 +147,18 @@ class Client extends Component {
           </div>
 
           <div className="panel">
+            <FormGroup row className="ml-2 search-container">
+              <Label className="mt-2 mr-4" for="search_name">Search</Label>
+              <Input
+                name="search_name"
+                placeholder="Email or Legal Name"
+                value={filter}
+                style={{height: 40, width: 250}}
+                onChange={(event) => this.handleFilter(event.target.value)}
+              />
+            </FormGroup>
             <ClientTable
-              items={clients}
+              items={filtered}
             />
           </div>
         </div>
