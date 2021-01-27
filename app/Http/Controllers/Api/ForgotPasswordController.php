@@ -49,7 +49,7 @@ class ForgotPasswordController extends Controller
             if ($passwordReset) {
                 $message = "Hello " . $email . "\r\n";
                 $message .= "Reset Password URL is following.\r\n";
-                $message .= URL::to('/') . "/reset?token=" . $token . "\r\n";
+                $message .= URL::to('/') . "/reset/" . $token . "\r\n";
                 $message .= "Thank you for using our website!\r\n\r\nStoneridege Team";
 
                 $headers = "From: admin@stoneridge.com";

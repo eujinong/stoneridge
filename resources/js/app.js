@@ -47,8 +47,8 @@ class App extends Component {
         <Router history={history}>
           <Switch>
             <AuthenticatedRoute path="/forgot" name="Forgot" component={Forgot} />
-            <AuthenticatedRoute path="/login" name="Login" component={Login} />
             <AuthenticatedRoute path="/reset/:token" name="Reset" component={Reset} />
+            <AuthenticatedRoute path="/login" name="Login" component={Login} />
             <AuthRoute path="/" name="Main" component={Main} />
           </Switch>
         </Router>
