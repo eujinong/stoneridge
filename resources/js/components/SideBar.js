@@ -19,7 +19,6 @@ class SideBar extends Component {
 
   async handleLogout() {
     await this.props.logout();
-    this.props.history.push('/login');
   }
 
   render() {
