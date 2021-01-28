@@ -119,9 +119,9 @@ class UserController extends Controller
           $image = substr($base64_image, strpos($base64_image, ',') + 1);
           $image = base64_decode($image);
           
-          Storage::disk('public')->put($filename . $type, $image);
+          Storage::disk('local')->put($filename . $type, $image);
   
-          $data['signature'] = $filename . $type;
+          $data['signature'] = "photos/" . $filename . $type;
         } else {
           return response()->json(
             [
