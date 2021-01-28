@@ -30,6 +30,14 @@ body {
             border-bottom: 1px solid #e3342f;
           }
         }
+
+        .imagePreview {
+          img {
+            height: 100%;
+            margin-top: 10px;
+            width: 100%;
+          }
+        }
       }
 
       .modal-footer {

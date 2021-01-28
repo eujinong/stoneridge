@@ -5,6 +5,7 @@ use App\User;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\URL;
 use Illuminate\Support\Facades\Validator;
 use JWTAuth;
@@ -97,7 +98,49 @@ class UserController extends Controller
 
 		$headers = "From: admin@stoneridge.com";
 
-    mail($data['email'], "Welcome to StoneRidge", $message, $headers);
+		mail($data['email'], "Welcome to StoneRidge", $message, $headers);
+		
+		$data['signature'] = "";
+
+		$base64_image = $request->input('signature');
+
+		if ($base64_image != '' && preg_match('/^data:image\/(\w+);base64,/', $base64_image)) {
+      $pos  = strpos($base64_image, ';');
+      $type = explode(':', substr($base64_image, 0, $pos))[1];
+
+      if (substr($type, 0, 5) == 'image') {
+        $filename = preg_replace('/[^A-Za-z0-9\-]/', '', $data['legal']) . '-' . date('Ymd_His');
+
+        $type = str_replace('image/', '.', $type);
+
+        $size = (int) (strlen(rtrim($base64_image, '=')) * 3 / 4);
+
+        if ($size < 1050000) {
+          $image = substr($base64_image, strpos($base64_image, ',') + 1);
+          $image = base64_decode($image);
+          
+          Storage::disk('public')->put($filename . $type, $image);
+  
+          $data['signature'] = $filename . $type;
+        } else {
+          return response()->json(
+            [
+              'status' => 'error',
+              'message' => 'File size must be less than 1MB.'
+            ],
+            406
+          );
+        }
+      } else {
+        return response()->json(
+          [
+            'status' => 'error',
+            'message' => 'File type is not image.'
+          ],
+          406
+        );
+      }
+    }
 
 		User::create(array(
 			'email' => $data['email'],
@@ -109,11 +152,19 @@ class UserController extends Controller
 			'active' => 0
 		));
 
-		$clients = User::where('user_type', '!=', 'S')->orderBy('id', 'DESC')->get();
+		$clients = User::where('user_type', '!=', 'S')
+									->where('user_type', '!=', 'A')
+									->orderBy('id', 'DESC')
+									->get();
+
+		$attorneys = User::where('user_type', 'A')
+									->orderBy('id', 'DESC')
+									->get();
 
 		return response()->json([
 			'status' => 'success',
-			'clients' => $clients
+			'clients' => $clients,
+			'attorneys' => $attorneys
 		], 200);
 	}
 
@@ -127,11 +178,19 @@ class UserController extends Controller
 					'active' => $data['active']
 				));
 
-		$clients = User::where('legal', '!=', 'superadmin')->orderBy('id', 'DESC')->get();
+		$clients = User::where('user_type', '!=', 'S')
+									->where('user_type', '!=', 'A')
+									->orderBy('id', 'DESC')
+									->get();
+
+		$attorneys = User::where('user_type', 'A')
+									->orderBy('id', 'DESC')
+									->get();
 
 		return response()->json([
 			'status' => 'success',
-			'clients' => $clients
+			'clients' => $clients,
+			'attorneys' => $attorneys
 		], 200);
 	}
 	
@@ -145,6 +204,18 @@ class UserController extends Controller
 		return response()->json([
 			'status' => 'success',
 			'clients' => $clients
+		], 200);
+	}
+
+	public function attorneys()
+	{
+		$attorneys = User::where('user_type', 'A')
+									->orderBy('id', 'DESC')
+									->get();
+
+		return response()->json([
+			'status' => 'success',
+			'attorneys' => $attorneys
 		], 200);
 	}
 }

@@ -145,8 +145,8 @@ class AttorneyTable extends Component {
             <Table.HeaderCell
               className="text-center"
               width={4}
-              sorted={column === 'name' ? direction : null}
-              onClick={this.handleSort.bind(this, 'name')}
+              sorted={column === 'legal' ? direction : null}
+              onClick={this.handleSort.bind(this, 'legal')}
             >
               Attorney Name
             </Table.HeaderCell>
@@ -170,9 +170,27 @@ class AttorneyTable extends Component {
                 >
                   <Table.Cell className="text-center">{index + 1}</Table.Cell>
                   <Table.Cell className="text-center">{item.email}</Table.Cell>
-                  <Table.Cell className="text-center">{item.name}</Table.Cell>
-                  <Table.Cell className="text-center">{item.clients}</Table.Cell>
-                  <Table.Cell className="text-center">{item.status}</Table.Cell>
+                  <Table.Cell className="text-center">{item.legal}</Table.Cell>
+                  <Table.Cell className="text-center">{item.clients || 0}</Table.Cell>
+                  <Table.Cell className="text-center">
+                    {
+                      item.active == 1
+                      ?
+                        <span
+                          className="label"
+                          style={{backgroundColor: '#00D994'}}
+                        >
+                          Active
+                        </span>
+                      :
+                        <span
+                          className="label"
+                          style={{backgroundColor: '#ffc107'}}
+                        >
+                          Pending
+                        </span>
+                    }
+                  </Table.Cell>
                   <Table.Cell className="text-center">
                     <a
                       className="mx-2"

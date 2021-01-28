@@ -24,6 +24,8 @@ Route::namespace('Api')->group(function () {
         Route::post('add-user', 'UserController@store');
         Route::put('update-user', 'UserController@update');
 
+        Route::get('attorneys', 'UserController@attorneys');
+
         Route::get('bonds', 'BondController@index');
     });
 });
