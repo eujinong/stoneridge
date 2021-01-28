@@ -143,6 +143,7 @@ class Client extends Component {
     const params = {
       email: editItem.email,
       legal: editItem.legal,
+      signature: null,
       active: editItem.active
     }
 

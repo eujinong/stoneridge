@@ -148,11 +148,12 @@ class Attorney extends Component {
   }
 
   async updateAttorney() {
-    const { editItem } = this.state;
+    const { editItem, imagePreviewUrl } = this.state;
 
     const params = {
       email: editItem.email,
       legal: editItem.legal,
+      signature: imagePreviewUrl,
       active: editItem.active
     }
 

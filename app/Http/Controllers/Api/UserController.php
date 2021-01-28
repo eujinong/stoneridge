@@ -172,9 +172,55 @@ class UserController extends Controller
 	{
 		$data = $request->all();
 
+		$user = User::where('email', $data['email'])->first();
+
+		$data['signature'] = "";
+
+		$base64_image = $request->input('signature');
+
+		if ($base64_image != '' && preg_match('/^data:image\/(\w+);base64,/', $base64_image)) {
+      $pos  = strpos($base64_image, ';');
+      $type = explode(':', substr($base64_image, 0, $pos))[1];
+
+      if (substr($type, 0, 5) == 'image') {
+        $filename = preg_replace('/[^A-Za-z0-9\-]/', '', $data['legal']) . '-' . date('Ymd_His');
+
+        $type = str_replace('image/', '.', $type);
+
+        $size = (int) (strlen(rtrim($base64_image, '=')) * 3 / 4);
+
+        if ($size < 1050000) {
+          $image = substr($base64_image, strpos($base64_image, ',') + 1);
+          $image = base64_decode($image);
+					
+					Storage::disk('local')->delete(str_replace('photos/', '', $user->signature));
+          Storage::disk('local')->put($filename . $type, $image);
+  
+          $data['signature'] = "photos/" . $filename . $type;
+        } else {
+          return response()->json(
+            [
+              'status' => 'error',
+              'message' => 'File size must be less than 1MB.'
+            ],
+            406
+          );
+        }
+      } else {
+        return response()->json(
+          [
+            'status' => 'error',
+            'message' => 'File type is not image.'
+          ],
+          406
+        );
+      }
+    }
+
 		User::where('email', $data['email'])
 				->update(array(
 					'legal' => $data['legal'],
+					'signature' => $data['signature'],
 					'active' => $data['active']
 				));
 
