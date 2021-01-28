@@ -175,7 +175,7 @@ class DataTable extends Component {
                   <Table.Cell className="text-center">{item.email}</Table.Cell>
                   <Table.Cell className="text-center">{item.legal}</Table.Cell>
                   <Table.Cell className="text-center">
-                    {item.user_type == 'M' ? 'A' : 'N'}
+                    {item.user_type == 'M' ? 'Admin' : 'Client'}
                   </Table.Cell>
                   <Table.Cell className="text-center">
                     {
@@ -190,7 +190,7 @@ class DataTable extends Component {
                       :
                         <span
                           className="label"
-                          style={{backgroundColor: '#ffc107'}}
+                          style={{backgroundColor: '#FF0000'}}
                         >
                           Pending
                         </span>
@@ -198,7 +198,7 @@ class DataTable extends Component {
                   </Table.Cell>
                   <Table.Cell className="text-center">
                     <a
-                      className="btn btn-primary pt-2 px-4"
+                      className="pt-2 px-4"
                       style={{textDecoration: 'underline'}}
                       onClick={() => onSelect(item.id)}
                     >

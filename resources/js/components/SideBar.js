@@ -29,6 +29,9 @@ class SideBar extends Component {
         <div className="text-center" style={{width: 280}}>
           <img src={Bitmaps.logo} alt="StoneRidge" />
         </div>
+        <div className="background">
+          <img src={Bitmaps.sidebar} alt="StoneRidge" />
+        </div>
         <Nav>
           <Navbar>
             <NavItem>
@@ -53,8 +56,9 @@ class SideBar extends Component {
             </NavItem>
           </Navbar>
         </Nav>
-        <div className="background">
-          <img src={Bitmaps.background} alt="StoneRidge" />
+        <div className="footer text-center">
+          <h6>StoneRidge</h6>
+          <h6>©2021</h6>
         </div>
       </div>
     );

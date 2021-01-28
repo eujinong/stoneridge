@@ -212,12 +212,10 @@ class Attorney extends Component {
           <div className="panel">
             <FormGroup row className="mx-1 search-container">
               <div className="d-flex">
-                <Label className="mr-4 mt-2" for="search">
-                  Search
-                </Label>
+                <i className="fa fa-search"></i>
                 <Input
                   name="search"
-                  placeholder="Email or Name"
+                  placeholder="Type Email or Name for search"
                   value={filter}
                   onChange={(event) => this.handleFilter(event.target.value)}
                 />

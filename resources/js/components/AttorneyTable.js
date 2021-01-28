@@ -185,7 +185,7 @@ class AttorneyTable extends Component {
                       :
                         <span
                           className="label"
-                          style={{backgroundColor: '#ffc107'}}
+                          style={{backgroundColor: '#FF0000'}}
                         >
                           Pending
                         </span>

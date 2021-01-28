@@ -1,9 +1,10 @@
 body {
   background-color: #FFFFFF;
+  font-family: 'Times New Roman', Times, serif;
 
   .btn-primary {
-    background-color: #0062cc;
-    border-color: #0062cc;
+    background-color: #0080FF;
+    border-color: #0080FF;
   }
 
   .add-client {
@@ -11,7 +12,7 @@ body {
       border: none;
 
       .modal-header {
-        background-color: #0062cc;
+        background-color: #0080FF;
         color: #FFFFFF;
 
         .close {

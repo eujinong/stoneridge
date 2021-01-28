@@ -97,12 +97,10 @@ class Bond extends Component {
           <div className="panel">
             <FormGroup row className="mx-1 search-container">
               <div className="d-flex">
-                <Label className="mr-4 mt-2" for="search_bond">
-                  Search
-                </Label>
+                <i className="fa fa-search"></i>
                 <Input
                   name="search_bond"
-                  placeholder="Bond Number"
+                  placeholder="Type Bond Number for search"
                   value={filter}
                   onChange={(event) => this.handleFilter(event.target.value)}
                 />
