@@ -351,7 +351,7 @@ class Client extends Component {
               <CustomInput
                 type="switch"
                 id="status"
-                label="Status"
+                label={editItem.active == 1 ? 'Deactive Client' : 'Active Client'}
                 checked={editItem.active == 1 ? true : false}
                 onChange={(val) => {
                   let { editItem } = this.state;

@@ -387,7 +387,7 @@ class Attorney extends Component {
               <CustomInput
                 type="switch"
                 id="status"
-                label="Status"
+                label={editItem.active == 1 ? 'Deactive Attorney' : 'Active Attorney'}
                 checked={editItem.active == 1 ? true : false}
                 onChange={(val) => {
                   let { editItem } = this.state;

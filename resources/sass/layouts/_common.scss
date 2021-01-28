@@ -43,6 +43,10 @@ body {
 
       .modal-footer {
         border-top: none;
+
+        button {
+          border-radius: 12px;
+        }
       }
     }
   }
