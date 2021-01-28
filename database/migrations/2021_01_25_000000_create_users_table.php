@@ -20,6 +20,7 @@ class CreateUsersTable extends Migration
             $table->char('user_type', 1);
             $table->integer('last_bond_number');
             $table->string('legal');
+            $table->string('signature', 256)->nullable();
             $table->boolean('active');
             $table->rememberToken();
             $table->timestamps();
@@ -29,7 +30,7 @@ class CreateUsersTable extends Migration
             array(
                 'email' => 'admin.stoneridge@gmail.com',
                 'password' => Hash::make('Admin@1234@'),
-                'user_type' => 'A',
+                'user_type' => 'S',
                 'last_bond_number' => 0,
                 'legal' => 'superadmin',
                 'active' => 1

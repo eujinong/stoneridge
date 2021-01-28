@@ -24,7 +24,7 @@ class Client extends Component {
       editable: false,
       editItem: [],
       showModal: false,
-      user_type: 'A',
+      user_type: 'M',
       email: '',
       legal: '',
       validate: true,
@@ -89,6 +89,7 @@ class Client extends Component {
       const params = {
         email,
         legal,
+        signature: null,
         user_type
       }
 
@@ -251,8 +252,8 @@ class Client extends Component {
                 <Input
                   type="radio"
                   name="radio2"
-                  checked={user_type == 'A'}
-                  onChange={() => this.setState({user_type: 'A'})}
+                  checked={user_type == 'M'}
+                  onChange={() => this.setState({user_type: 'M'})}
                 />
                 {' '}Admin User
               </Label>
@@ -317,7 +318,7 @@ class Client extends Component {
             <h6 className="mb-3">User Type</h6>
             <FormGroup check inline>
               <Label check>
-                <Input type="radio" checked={editItem.user_type == 'A'} disabled />
+                <Input type="radio" checked={editItem.user_type == 'M'} disabled />
                 {' '}Admin User
               </Label>
             </FormGroup>

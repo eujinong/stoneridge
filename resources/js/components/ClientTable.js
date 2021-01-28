@@ -174,7 +174,9 @@ class DataTable extends Component {
                   <Table.Cell className="text-center">{item.id}</Table.Cell>
                   <Table.Cell className="text-center">{item.email}</Table.Cell>
                   <Table.Cell className="text-center">{item.legal}</Table.Cell>
-                  <Table.Cell className="text-center">{item.user_type}</Table.Cell>
+                  <Table.Cell className="text-center">
+                    {item.user_type == 'M' ? 'A' : 'N'}
+                  </Table.Cell>
                   <Table.Cell className="text-center">
                     {
                       item.active == 1

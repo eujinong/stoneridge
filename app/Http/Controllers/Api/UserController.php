@@ -105,10 +105,11 @@ class UserController extends Controller
 			'user_type' => $data['user_type'],
 			'last_bond_number' => 0,
 			'legal' => $data['legal'],
+			'signature' => $data['signature'],
 			'active' => 0
 		));
 
-		$clients = User::where('legal', '!=', 'superadmin')->orderBy('id', 'DESC')->get();
+		$clients = User::where('user_type', '!=', 'S')->orderBy('id', 'DESC')->get();
 
 		return response()->json([
 			'status' => 'success',
@@ -136,7 +137,10 @@ class UserController extends Controller
 	
 	public function clients()
 	{
-		$clients = User::where('legal', '!=', 'superadmin')->orderBy('id', 'DESC')->get();
+		$clients = User::where('user_type', '!=', 'S')
+									->where('user_type', '!=', 'A')
+									->orderBy('id', 'DESC')
+									->get();
 
 		return response()->json([
 			'status' => 'success',
