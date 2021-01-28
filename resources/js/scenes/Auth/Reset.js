@@ -125,7 +125,7 @@ class Reset extends Component {
                       disabled={isSubmitting}
                       type="submit"
                       color="success"
-                      className="btn-lg"
+                      className="btn-lg px-5 py-1"
                     >
                       {
                         isSubmitting && (
@@ -140,7 +140,7 @@ class Reset extends Component {
                   </FormGroup>
                   <FormGroup>
                     <div className="text-center">
-                      <Link to="/login">Cancel</Link>
+                      <Link to="/login" style={{fontSize: 16}}>Cancel</Link>
                     </div>
                   </FormGroup>
                 </div>

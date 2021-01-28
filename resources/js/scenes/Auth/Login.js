@@ -122,7 +122,7 @@ class Login extends Component {
                       disabled={isSubmitting}
                       type="submit"
                       color="success"
-                      className="btn-lg"
+                      className="btn-lg px-5 py-1"
                     >
                       {
                         isSubmitting && (
@@ -137,7 +137,7 @@ class Login extends Component {
                   </FormGroup>
                   <FormGroup className="mt-4">
                     <div className="text-center">
-                      <Link to="/forgot">I forgot my password</Link>
+                      <Link to="/forgot" style={{fontSize: 16}}>I forgot my password</Link>
                     </div>
                   </FormGroup>
                 </div>
