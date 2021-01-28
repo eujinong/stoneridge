@@ -87,6 +87,10 @@ body {
           padding: 10px 0;
           vertical-align: middle;
 
+          a {
+            cursor: pointer;
+          }
+
           span.label {
             border-radius: 20px;
             color: #FFFFFF;

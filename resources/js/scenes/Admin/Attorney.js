@@ -2,7 +2,8 @@ import React, { Component } from 'react';
 import { withRouter } from 'react-router-dom';
 import {
   Modal, ModalHeader, ModalBody, ModalFooter,
-  FormGroup, Label, Input, Button
+  Row, Col,
+  FormGroup, Label, Input, Button, CustomInput
 } from 'reactstrap';
 
 import Api from '../../apis/app';
@@ -21,6 +22,10 @@ class Attorney extends Component {
       attorneys: [],
       filtered: [],
       filter: '',
+      view: false,
+      viewItem: [],
+      editable: false,
+      editItem: [],
       imagePreviewUrl: '',
       showModal: false,
       email: '',
@@ -105,6 +110,7 @@ class Attorney extends Component {
           this.setState({
             attorneys: body.attorneys,
             filtered: body.attorneys,
+            imagePreviewUrl: '',
             showModal: false
           });
           break;
@@ -119,12 +125,51 @@ class Attorney extends Component {
     }
   }
 
-  handleView() {
+  handleView(id) {
+    const { attorneys } = this.state;
 
+    let viewItem = attorneys.filter(item => item.id == id)[0];
+    
+    this.setState({
+      view: true,
+      viewItem: {...viewItem}
+    });
   }
 
-  handleEdit() {
+  handleEdit(id) {
+    const { attorneys } = this.state;
+
+    let editItem = attorneys.filter(item => item.id == id)[0];
     
+    this.setState({
+      editable: true,
+      editItem: {...editItem}
+    });
+  }
+
+  async updateAttorney() {
+    const { editItem } = this.state;
+
+    const params = {
+      email: editItem.email,
+      legal: editItem.legal,
+      active: editItem.active
+    }
+
+    const data = await Api.put('update-user', params);
+      const { response, body } = data;
+      switch (response.status) {
+        case 200:
+          this.setState({
+            attorneys: body.attorneys,
+            filtered: body.attorneys,
+            imagePreviewUrl: '',
+            editable: false
+          });
+          break;
+        default:
+          break;
+      }
   }
 
   render() {
@@ -132,6 +177,10 @@ class Attorney extends Component {
       showMenu,
       filtered,
       filter,
+      view,
+      viewItem,
+      editable,
+      editItem,
       imagePreviewUrl,
       showModal,
       email,
@@ -141,7 +190,7 @@ class Attorney extends Component {
     } = this.state;
 
     let $imagePreview = null;
-    if (imagePreviewUrl) {
+    if (imagePreviewUrl != '') {
       $imagePreview = (<img src={imagePreviewUrl} />);
     }
 
@@ -242,6 +291,127 @@ class Attorney extends Component {
               color="primary"
               disabled={email == '' || legal == ''}
               onClick={this.addAttorney.bind(this)}
+            >
+              Save
+            </Button>
+          </ModalFooter>
+        </Modal>
+
+        <Modal
+          className="add-client"
+          isOpen={view}
+          centered={true}
+          size="md"
+        >
+          <ModalHeader toggle={() => {this.setState({view: false})}}>
+            View Attorney
+          </ModalHeader>
+          <ModalBody>
+            <hr />
+            <Row>
+              <Col sm="2"><Label>Name</Label></Col>
+              <Col sm="10"><Label>{viewItem.legal}</Label></Col>
+            </Row>
+            <hr />
+            <Row>
+              <Col sm="2"><Label>Email</Label></Col>
+              <Col sm="10"><Label>{viewItem.email}</Label></Col>
+            </Row>
+            <hr />
+            <Row>
+              <Col sm="2"><Label>Status</Label></Col>
+              <Col sm="10">
+                <Label>{viewItem.active == 1 ? 'Active' : 'Pending'}</Label>
+              </Col>
+            </Row>
+            <hr />
+            <img style={{width: '100%'}} src={viewItem.signature} />
+          </ModalBody>
+          <ModalFooter>
+            <Button
+              color="primary"
+              disabled={editItem.legal == ''}
+              onClick={() => {this.setState({view: false})}}
+            >
+              OK
+            </Button>
+          </ModalFooter>
+        </Modal>
+
+        <Modal
+          className="add-client"
+          isOpen={editable}
+          centered={true}
+          size="md"
+        >
+          <ModalHeader toggle={() => {this.setState({editable: false})}}>
+            Edit Attorney
+          </ModalHeader>
+          <ModalBody>
+            <FormGroup>
+              <Label>Name</Label>
+              <Input
+                type="text"
+                value={editItem.legal}
+                onChange={(val) => {
+                  let { editItem } = this.state;
+                  editItem.legal = val.target.value;
+
+                  this.setState({
+                    editItem
+                  });
+                }}
+              />
+            </FormGroup>
+            <FormGroup>
+              <Label>Email</Label>
+              <Input type="text" value={editItem.email} disabled />
+            </FormGroup>
+            <FormGroup>
+              <Label className="mt-3">Update Signature</Label>
+              <Input
+                className="fileInput" 
+                type="file" 
+                onChange={(e)=>this.handleImageChange(e)}
+              />
+              <div className="imagePreview">
+                {
+                  imagePreviewUrl == '' ? (
+                    <img style={{width: '100%'}} src={editItem.signature} />
+                  ) : (
+                    $imagePreview
+                  )
+                }
+              </div>
+            </FormGroup>
+            <FormGroup>
+              <CustomInput
+                type="switch"
+                id="status"
+                label="Status"
+                checked={editItem.active == 1 ? true : false}
+                onChange={(val) => {
+                  let { editItem } = this.state;
+                  editItem.active = val.target.checked ? 1 : 0;
+
+                  this.setState({
+                    editItem
+                  });
+                }}
+              />
+            </FormGroup>
+          </ModalBody>
+          <ModalFooter>
+            <Button
+              color="default"
+              onClick={() => {this.setState({editable: false})}}
+            >
+              Cancel
+            </Button>
+            <Button
+              color="primary"
+              disabled={editItem.legal == ''}
+              onClick={this.updateAttorney.bind(this)}
             >
               Save
             </Button>
