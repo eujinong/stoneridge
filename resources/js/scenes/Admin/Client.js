@@ -21,10 +21,11 @@ class Client extends Component {
       clients: [],
       filtered: [],
       filter: '',
+      user: null,
       editable: false,
       editItem: [],
       showModal: false,
-      user_type: 'M',
+      user_type: 'N',
       email: '',
       legal: '',
       validate: true,
@@ -35,11 +36,25 @@ class Client extends Component {
   }
 
   async componentDidMount() {
+    const auth = JSON.parse(localStorage.getItem('auth'));
+    const user = auth.user;
+
+    this.setState({
+      user
+    });
+
     const data = await Api.get('clients');
     const { response, body } = data;
     switch (response.status) {
       case 200:
-        const clients = body.clients;
+        let clients;
+
+        if (user.user_type == 'S') {
+          clients = body.clients;
+        } else {
+          clients = body.clients.filter(client => client.user_type == 'N');
+        }
+
         for (let i = 0; i < clients.length; i++) {
           let id = '' + clients[i].id;
           
@@ -97,7 +112,14 @@ class Client extends Component {
       const { response, body } = data;
       switch (response.status) {
         case 200:
-          const clients = body.clients;
+          let clients;
+
+          if (user.user_type == 'S') {
+            clients = body.clients;
+          } else {
+            clients = body.clients.filter(client => client.user_type == 'N');
+          }
+          
           for (let i = 0; i < clients.length; i++) {
             let id = '' + clients[i].id;
             
@@ -179,6 +201,7 @@ class Client extends Component {
       showMenu,
       filtered,
       filter,
+      user,
       editable,
       editItem,
       showModal,
@@ -201,7 +224,15 @@ class Client extends Component {
             <i className="fa fa-bars"></i>
           </a>
 
-          <span className="mb-4 title">Welcome Tender Bond Portal Admin</span>
+          <span className="mb-4 title">
+            {
+              (user && user.user_type == 'M') ? (
+                'Hi ' + user.legal + '! Welcome Tender Bond'
+              ) : (
+                'Welcome Tender Bond Portal Admin'
+              )
+            }
+          </span>
 
           <div className="panel">
             <FormGroup row className="mx-1 search-container">
@@ -247,17 +278,21 @@ class Client extends Component {
               )
             }
             <h6 className="mb-3">User Type</h6>
-            <FormGroup check inline>
-              <Label check>
-                <Input
-                  type="radio"
-                  name="radio2"
-                  checked={user_type == 'M'}
-                  onChange={() => this.setState({user_type: 'M'})}
-                />
-                {' '}Admin User
-              </Label>
-            </FormGroup>
+            {
+              (user && user.user_type == 'S') && (
+                <FormGroup check inline>
+                  <Label check>
+                    <Input
+                      type="radio"
+                      name="radio2"
+                      checked={user_type == 'M'}
+                      onChange={() => this.setState({user_type: 'M'})}
+                    />
+                    {' '}Admin User
+                  </Label>
+                </FormGroup>
+              )
+            }
             <FormGroup check inline>
               <Label check>
                 <Input
@@ -316,12 +351,16 @@ class Client extends Component {
           </ModalHeader>
           <ModalBody>
             <h6 className="mb-3">User Type</h6>
-            <FormGroup check inline>
-              <Label check>
-                <Input type="radio" checked={editItem.user_type == 'M'} disabled />
-                {' '}Admin User
-              </Label>
-            </FormGroup>
+            {
+              (user && user.user_type == 'S') && (
+                <FormGroup check inline>
+                  <Label check>
+                    <Input type="radio" checked={editItem.user_type == 'M'} disabled />
+                    {' '}Admin User
+                  </Label>
+                </FormGroup>
+              )
+            }
             <FormGroup check inline>
               <Label check>
                 <Input type="radio" checked={editItem.user_type == 'N'} disabled />
