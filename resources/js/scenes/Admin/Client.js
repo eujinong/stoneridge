@@ -223,6 +223,7 @@ class Client extends Component {
             </FormGroup>
             <div className="table-responsive">
               <ClientTable
+                edit={true}
                 items={filtered}
                 onSelect={this.handleEditModal.bind(this)}
               />

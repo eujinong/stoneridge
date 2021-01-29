@@ -61,52 +61,98 @@ class Profile extends Component {
             user && (
               <div className="panel">
                 <div className="table-responsive">
-                  <Table unstackable singleLine>
-                    <Table.Body>
-                      <Table.Row>
-                        <Table.Cell className="text-center">Client Number</Table.Cell>
-                        <Table.Cell className="text-center">{user.id}</Table.Cell>
-                      </Table.Row>
-                      <Table.Row>
-                        <Table.Cell className="text-center">Name</Table.Cell>
-                        <Table.Cell className="text-center">{user.legal}</Table.Cell>
-                      </Table.Row>
-                      <Table.Row>
-                        <Table.Cell className="text-center">Email</Table.Cell>
-                        <Table.Cell className="text-center">{user.email}</Table.Cell>
-                      </Table.Row>
-                      <Table.Row>
-                        <Table.Cell className="text-center">Bid Bond</Table.Cell>
-                        <Table.Cell className="text-center">0</Table.Cell>
-                      </Table.Row>
-                      <Table.Row>
-                        <Table.Cell className="text-center">Agreement Bond</Table.Cell>
-                        <Table.Cell className="text-center">0</Table.Cell>
-                      </Table.Row>
-                      <Table.Row>
-                        <Table.Cell className="text-center">Profile Status</Table.Cell>
-                        <Table.Cell className="text-center">
-                          {
-                            user.active == 1
-                            ?
-                              <span
-                                className="label"
-                                style={{backgroundColor: '#00D994'}}
-                              >
-                                Active
-                              </span>
-                            :
-                              <span
-                                className="label"
-                                style={{backgroundColor: '#FF0000'}}
-                              >
-                                Pending
-                              </span>
-                          }
-                        </Table.Cell>
-                      </Table.Row>
-                    </Table.Body>
-                  </Table>
+                  {
+                    user.user_type == 'N' && (
+                      <Table unstackable singleLine>
+                        <Table.Body>
+                          <Table.Row>
+                            <Table.Cell className="text-center">Client Number</Table.Cell>
+                            <Table.Cell className="text-center">{user.id}</Table.Cell>
+                          </Table.Row>
+                          <Table.Row>
+                            <Table.Cell className="text-center">Name</Table.Cell>
+                            <Table.Cell className="text-center">{user.legal}</Table.Cell>
+                          </Table.Row>
+                          <Table.Row>
+                            <Table.Cell className="text-center">Email</Table.Cell>
+                            <Table.Cell className="text-center">{user.email}</Table.Cell>
+                          </Table.Row>
+                          <Table.Row>
+                            <Table.Cell className="text-center">Bid Bond</Table.Cell>
+                            <Table.Cell className="text-center">0</Table.Cell>
+                          </Table.Row>
+                          <Table.Row>
+                            <Table.Cell className="text-center">Agreement Bond</Table.Cell>
+                            <Table.Cell className="text-center">0</Table.Cell>
+                          </Table.Row>
+                          <Table.Row>
+                            <Table.Cell className="text-center">Profile Status</Table.Cell>
+                            <Table.Cell className="text-center">
+                              {
+                                user.active == 1
+                                ?
+                                  <span
+                                    className="label"
+                                    style={{backgroundColor: '#00D994'}}
+                                  >
+                                    Active
+                                  </span>
+                                :
+                                  <span
+                                    className="label"
+                                    style={{backgroundColor: '#FF0000'}}
+                                  >
+                                    Pending
+                                  </span>
+                              }
+                            </Table.Cell>
+                          </Table.Row>
+                        </Table.Body>
+                      </Table>
+                    )
+                  }
+                  {
+                    user.user_type == 'A' && (
+                      <Table unstackable singleLine>
+                        <Table.Body>
+                          <Table.Row>
+                            <Table.Cell className="text-center">Name</Table.Cell>
+                            <Table.Cell className="text-center">{user.legal}</Table.Cell>
+                          </Table.Row>
+                          <Table.Row>
+                            <Table.Cell className="text-center">Email</Table.Cell>
+                            <Table.Cell className="text-center">{user.email}</Table.Cell>
+                          </Table.Row>
+                          <Table.Row>
+                            <Table.Cell className="text-center">Clients</Table.Cell>
+                            <Table.Cell className="text-center">0</Table.Cell>
+                          </Table.Row>
+                          <Table.Row>
+                            <Table.Cell className="text-center">Profile Status</Table.Cell>
+                            <Table.Cell className="text-center">
+                              {
+                                user.active == 1
+                                ?
+                                  <span
+                                    className="label"
+                                    style={{backgroundColor: '#00D994'}}
+                                  >
+                                    Active
+                                  </span>
+                                :
+                                  <span
+                                    className="label"
+                                    style={{backgroundColor: '#FF0000'}}
+                                  >
+                                    Pending
+                                  </span>
+                              }
+                            </Table.Cell>
+                          </Table.Row>
+                        </Table.Body>
+                      </Table>
+                    )
+                  }
                 </div>
               </div>
             )

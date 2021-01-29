@@ -104,6 +104,27 @@ class SideBar extends Component {
               </Navbar>
             )
           }
+          {
+            user_type == 'A' && (
+              <Navbar>
+                <NavItem>
+                  <NavLink tag={Link} to="/profile">
+                    <i className="mr-2 fa fa-user"></i> My Profile
+                  </NavLink>
+                </NavItem>
+                <NavItem>
+                  <NavLink tag={Link} to="/my-clients">
+                    <i className="mr-2 fa fa-users"></i> My Clients
+                  </NavLink>
+                </NavItem>
+                <NavItem>
+                  <a className="nav-link" onClick={this.handleLogout}>
+                    <i className="mr-2 fa fa-sign-out"></i> Log out
+                  </a>
+                </NavItem>
+              </Navbar>
+            )
+          }
         </Nav>
         <div className="footer text-center">
           <h6>StoneRidge</h6>

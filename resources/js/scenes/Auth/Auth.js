@@ -64,7 +64,7 @@ class Auth extends Component {
       this.props.history.push('/clients');
     }
 
-    if (auth.user.user_type == 'N') {
+    if (auth.user.user_type == 'N' || auth.user.user_type == 'A') {
       this.props.history.push('/profile');
     }
   }

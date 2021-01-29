@@ -113,6 +113,7 @@ class DataTable extends Component {
 
   render() {
     const {
+      edit,
       onSelect,
       items
     } = this.props;
@@ -161,7 +162,11 @@ class DataTable extends Component {
               Type
             </Table.HeaderCell>
             <Table.HeaderCell className="text-center">Status</Table.HeaderCell>
-            <Table.HeaderCell className="text-center">Action</Table.HeaderCell>
+            {
+              edit && (
+                <Table.HeaderCell className="text-center">Action</Table.HeaderCell>
+              )
+            }
           </Table.Row>
         </Table.Header>
         <Table.Body>
@@ -196,21 +201,25 @@ class DataTable extends Component {
                         </span>
                     }
                   </Table.Cell>
-                  <Table.Cell className="text-center">
-                    <a
-                      className="pt-2 px-4"
-                      style={{textDecoration: 'underline'}}
-                      onClick={() => onSelect(item.id)}
-                    >
-                      <i className="fa fa-pencil mr-2"></i>
-                      EDIT
-                    </a>
-                  </Table.Cell>
+                  {
+                    edit && (
+                      <Table.Cell className="text-center">
+                        <a
+                          className="pt-2 px-4"
+                          style={{textDecoration: 'underline'}}
+                          onClick={() => onSelect(item.id)}
+                        >
+                          <i className="fa fa-pencil mr-2"></i>
+                          EDIT
+                        </a>
+                      </Table.Cell>
+                    )
+                  }
                 </Table.Row>
               ))
             ) : (
               <Table.Row>
-                <Table.Cell className="text-center" colSpan={6}>
+                <Table.Cell className="text-center" colSpan={edit ? 6 : 5}>
                   <h5>No Clients</h5>
                 </Table.Cell>
               </Table.Row>
@@ -237,7 +246,7 @@ class DataTable extends Component {
                     }}
                   />
                 </Table.HeaderCell>
-                <Table.HeaderCell colSpan="5">
+                <Table.HeaderCell colSpan={edit ? 5 : 4}>
                   <Menu floated="right" pagination>
                     <Pagination
                       activePage={activePage}
