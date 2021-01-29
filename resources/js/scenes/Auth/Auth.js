@@ -4,7 +4,7 @@ import React, {
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import { Link, withRouter } from 'react-router-dom';
-
+import QueryString from 'qs';
 import {
   Form, FormGroup, Input, Button, Alert
 } from 'reactstrap';
@@ -18,9 +18,28 @@ import {
 } from '../../actions/common';
 import AppHelper from '../../helpers/AppHelper';
 
-class Login extends Component {
+class Auth extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      email: ''
+    };
+  }
+
+  componentDidMount() {
+    const search = QueryString.parse(this.props.location.search, { ignoreQueryPrefix: true });
+    
+    this.setState({
+      email: search.email
+    });
+  }
+
   async handleSubmit(values, bags) {
-    const data = await Api.post('login', values);
+    const { email } = this.state;
+
+    values.email = email;
+
+    const data = await Api.post('auth', values);
     const { response, body } = data;
     switch (response.status) {
       case 422:
@@ -40,7 +59,7 @@ class Login extends Component {
 
   async login(auth) {
     await this.props.login(auth);
-
+    
     if (auth.user.user_type == 'S' || auth.user.user_type == 'M') {
       this.props.history.push('/clients');
     }
@@ -56,12 +75,10 @@ class Login extends Component {
         form={(
           <Formik
             initialValues={{
-              email: '',
               password: ''
             }}
             validationSchema={
               Yup.object().shape({
-                email: Yup.string().required('Email is required!'),
                 password: Yup.string().min(6, 'Password has to be longer than 6 characters!').required('Password is required!')
               })
             }
@@ -79,13 +96,8 @@ class Login extends Component {
               <Form className="intro-box-form-field" onSubmit={handleSubmit}>
                 {status && <Alert {...status} />}
                 {
-                  (!!errors.email || !!errors.password) && (
+                  !!errors.password && (
                     <ul className="alert alert-danger">
-                      {touched.email && !!errors.email && (
-                        <li>
-                          {touched.email && errors.email}
-                        </li>
-                      )}
                       {touched.password && !!errors.password && (
                         <li>
                           {touched.password && errors.password}
@@ -95,19 +107,6 @@ class Login extends Component {
                   )
                 }
                 <div className="form-fields">
-                  <FormGroup>
-                    <Input
-                      type="text"
-                      name="email"
-                      id="email"
-                      placeholder="Email"
-                      value={values.email}
-                      onChange={handleChange}
-                      onBlur={handleBlur}
-                      invalid={touched.email && !!errors.email}
-                    />
-                    <i className="far fa-user" />
-                  </FormGroup>
                   <FormGroup>
                     <Input
                       type="password"
@@ -141,11 +140,6 @@ class Login extends Component {
                       Log in
                     </Button>
                   </FormGroup>
-                  <FormGroup className="mt-4">
-                    <div className="text-center">
-                      <Link to="/forgot" style={{fontSize: 16}}>I forgot my password</Link>
-                    </div>
-                  </FormGroup>
                 </div>
               </Form>
             )}
@@ -162,4 +156,4 @@ const mapDispatchToProps = dispatch => ({
   login: bindActionCreators(login, dispatch)
 });
 
-export default withRouter(connect(mapStateToProps, mapDispatchToProps)(Login));
+export default withRouter(connect(mapStateToProps, mapDispatchToProps)(Auth));

@@ -9,6 +9,7 @@ import history from './history';
 
 import Main from './scenes/Main';
 import Login from './scenes/Auth/Login';
+import Auth from './scenes/Auth/Auth';
 import Forgot from './scenes/Auth/Forgot';
 import Reset from './scenes/Auth/Reset';
 
@@ -48,6 +49,7 @@ class App extends Component {
           <Switch>
             <AuthenticatedRoute path="/forgot" name="Forgot" component={Forgot} />
             <AuthenticatedRoute path="/reset/:token" name="Reset" component={Reset} />
+            <AuthenticatedRoute path="/authemail" name="Auth" component={Auth} />
             <AuthenticatedRoute path="/login" name="Login" component={Login} />
             <AuthRoute path="/" name="Main" component={Main} />
           </Switch>

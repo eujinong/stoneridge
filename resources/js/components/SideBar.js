@@ -14,7 +14,21 @@ import Bitmaps from '../theme/Bitmaps';
 class SideBar extends Component {
   constructor(props) {
     super(props);
+
+    this.state = {
+      user_type: ''
+    }
+
     this.handleLogout = this.handleLogout.bind(this);
+  }
+
+  componentDidMount() {
+    const auth = JSON.parse(localStorage.getItem('auth'));
+    const user_type = auth.user.user_type;
+    
+    this.setState({
+      user_type
+    });
   }
 
   async handleLogout() {
@@ -23,6 +37,7 @@ class SideBar extends Component {
   }
 
   render() {
+    const { user_type } = this.state;
 
     return (
       <div className="admin-sidebar">
@@ -33,28 +48,62 @@ class SideBar extends Component {
           <img src={Bitmaps.sidebar} alt="StoneRidge" />
         </div>
         <Nav>
-          <Navbar>
-            <NavItem>
-              <NavLink tag={Link} to="/clients">
-                <i className="mr-2 fa fa-users"></i> Portal Clients
-              </NavLink>
-            </NavItem>
-            <NavItem>
-              <NavLink tag={Link} to="/bonds">
-                <i className="mr-2 fa fa-file"></i> Lookup Client Request
-              </NavLink>
-            </NavItem>
-            <NavItem>
-              <NavLink tag={Link} to="/attorneys">
-                <i className="mr-2 fa fa-list"></i> Attorney List
-              </NavLink>
-            </NavItem>
-            <NavItem>
-              <a className="nav-link" onClick={this.handleLogout}>
-                <i className="mr-2 fa fa-sign-out"></i> Log out
-              </a>
-            </NavItem>
-          </Navbar>
+          {
+            (user_type == 'S' || user_type == 'M') && (
+              <Navbar>
+                <NavItem>
+                  <NavLink tag={Link} to="/clients">
+                    <i className="mr-2 fa fa-users"></i> Portal Clients
+                  </NavLink>
+                </NavItem>
+                <NavItem>
+                  <NavLink tag={Link} to="/bonds">
+                    <i className="mr-2 fa fa-file"></i> Lookup Client Request
+                  </NavLink>
+                </NavItem>
+                {
+                  user_type == 'S' && (
+                    <NavItem>
+                      <NavLink tag={Link} to="/attorneys">
+                        <i className="mr-2 fa fa-list"></i> Attorney List
+                      </NavLink>
+                    </NavItem>
+                  )
+                }
+                <NavItem>
+                  <a className="nav-link" onClick={this.handleLogout}>
+                    <i className="mr-2 fa fa-sign-out"></i> Log out
+                  </a>
+                </NavItem>
+              </Navbar>
+            )
+          }
+          {
+            user_type == 'N' && (
+              <Navbar>
+                <NavItem>
+                  <NavLink tag={Link} to="/profile">
+                    <i className="mr-2 fa fa-user"></i> My Profile
+                  </NavLink>
+                </NavItem>
+                <NavItem>
+                  <NavLink tag={Link} to="/new-bond">
+                    <i className="mr-2 fa fa-plus-square"></i> New Bond Request
+                  </NavLink>
+                </NavItem>
+                <NavItem>
+                  <NavLink tag={Link} to="/my-bonds">
+                    <i className="mr-2 fa fa-list"></i> Lookup Request
+                  </NavLink>
+                </NavItem>
+                <NavItem>
+                  <a className="nav-link" onClick={this.handleLogout}>
+                    <i className="mr-2 fa fa-sign-out"></i> Log out
+                  </a>
+                </NavItem>
+              </Navbar>
+            )
+          }
         </Nav>
         <div className="footer text-center">
           <h6>StoneRidge</h6>

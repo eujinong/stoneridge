@@ -16,6 +16,7 @@ use Illuminate\Support\Facades\Route;
 
 Route::namespace('Api')->group(function () {
     Route::post('login', 'UserController@login');
+    Route::post('auth', 'UserController@auth');
     Route::post('forgot', 'ForgotPasswordController@forgot');
     Route::post('reset/{token}', 'ForgotPasswordController@reset');
 

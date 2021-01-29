@@ -56,6 +56,70 @@ class UserController extends Controller
 
 		$user = User::where('email', $request->email)->first();
 
+		if ($user->active == 0) {
+			return response()->json(
+				[
+					'status' => 'error',
+					'message' => 'You have been deactivated. Please contact StoneRidge (800) 668-1653'
+				],
+				406
+			);
+		}
+
+		return response()->json([
+			'status' => 'success',
+			'data' => [
+				'token' => $token,
+				'user' => $user
+			]
+		], 200);
+	}
+
+	public function auth(Request $request)
+  {
+    $validator = Validator::make(
+			$request->all(),
+			[
+				'email' => 'required|string|max:255',
+				'password' => 'required|string|min:6',
+			]
+		);
+
+		if ($validator->fails()) {
+			return response()->json(
+				[
+					'status' => 'fail',
+					'data' => $validator->errors(),
+				],
+				422
+			);
+    }
+    
+    $credentials = $request->only('email', 'password');
+		try {
+			if (!$token = JWTAuth::attempt($credentials)) {
+				return response()->json(
+					[
+						'status' => 'error',
+						'message'=> 'Invalid credentials.'
+					],
+					406
+				);
+			}
+		} catch (JWTException $e) {
+			return response()->json(
+				[
+					'status' => 'error',
+					'message' => 'Invalid credentials.'
+				],
+				406
+			);
+		}
+
+		$user = User::where('email', $request->email)->first();
+		$user->active = 1;
+		$user->save();
+
 		return response()->json([
 			'status' => 'success',
 			'data' => [
