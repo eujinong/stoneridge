@@ -185,7 +185,7 @@ class UserController extends Controller
           
           Storage::disk('local')->put($filename . $type, $image);
   
-          $data['signature'] = "photos/" . $filename . $type;
+          $data['signature'] = "files/" . $filename . $type;
         } else {
           return response()->json(
             [
@@ -257,10 +257,10 @@ class UserController extends Controller
           $image = substr($base64_image, strpos($base64_image, ',') + 1);
           $image = base64_decode($image);
 					
-					Storage::disk('local')->delete(str_replace('photos/', '', $user->signature));
+					Storage::disk('local')->delete(str_replace('files/', '', $user->signature));
           Storage::disk('local')->put($filename . $type, $image);
   
-          $data['signature'] = "photos/" . $filename . $type;
+          $data['signature'] = "files/" . $filename . $type;
         } else {
           return response()->json(
             [

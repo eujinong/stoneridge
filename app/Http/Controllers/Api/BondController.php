@@ -1,11 +1,13 @@
 <?php
 namespace App\Http\Controllers\Api;
 
+use App\User;
 use App\Bond;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 
-use Log;
+use PDF;
 
 class BondController extends Controller
 {
@@ -69,11 +71,20 @@ class BondController extends Controller
     $data['created_at'] = date('Y-m-d H:i:s');
     $data['updated_at'] = date('Y-m-d H:i:s');
 
-    Bond::create($data);
+    // Bond::create($data);
+
+    $client = User::find($data['client_id']);
+    $data['legal'] = $client->legal;
+
+    Storage::disk('local')->delete($bond_no . '.pdf');
+
+    $pdf = PDF::loadView('pdf',array('data' => $data));
+    $pdf->save('files/' . $bond_no . '.pdf');
 
     return response()->json([
       'status' => 'success',
-      'message' => 'Your Bond Request stored successfully!'
+      'message' => 'Your Bond Request processed successfully!',
+      'bond_no' => $bond_no
 		], 200);
   }
 }

@@ -45,7 +45,7 @@ return [
 
         'local' => [
             'driver' => 'local',
-            'root' => 'photos',
+            'root' => 'files',
         ],
 
         'public' => [

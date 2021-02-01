@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { withRouter } from 'react-router-dom';
 import {
   Row, Col, Button,
+  Modal, ModalHeader, ModalBody,
   Form, FormGroup,
   InputGroup, InputGroupAddon,
   Label, Input
@@ -13,6 +14,7 @@ import "react-datepicker/dist/react-datepicker.css";
 import Api from '../../apis/app';
 
 import SideBar from '../../components/SideBar';
+import PDF from '../../components/PDF';
 
 import Bitmaps from '../../theme/Bitmaps';
 
@@ -22,6 +24,8 @@ class NewBond extends Component {
 
     this.state = {
       showMenu: false,
+      showPDF: false,
+      bond_no: '',
       closing: new Date(),
       close_date: '',
       close_time: '',
@@ -136,7 +140,7 @@ class NewBond extends Component {
     }
   }
 
-  async handleSave() {
+  async handleSave(mode) {
     const {
       close_date, close_time,
       obligee, description,
@@ -169,6 +173,10 @@ class NewBond extends Component {
     const { response, body } = data;
     switch (response.status) {
       case 200:
+        this.setState({
+          showPDF: mode == 'print' ? true : false,
+          bond_no: body.bond_no
+        });
         this.setNotifications('success', body.message);
         break;
       case 500:
@@ -181,6 +189,8 @@ class NewBond extends Component {
   render() {
     const {
       showMenu,
+      showPDF,
+      bond_no,
       closing,
       obligee, description,
       contract_no, contract_price,
@@ -580,11 +590,14 @@ class NewBond extends Component {
                 <Col sm={12} className="text-center">
                   <Button
                     className="btn btn-primary px-4"
-                    onClick={this.handleSave.bind(this)}
+                    onClick={this.handleSave.bind(this, 'save')}
                   >
                     <i className="fa fa-save mr-2"></i> Save
                   </Button>
-                  <Button className="btn btn-success px-4 mx-2">
+                  <Button
+                    className="btn btn-success px-4 mx-2"
+                    onClick={this.handleSave.bind(this, 'print')}
+                  >
                     <i className="fa fa-print mr-2"></i> Print
                   </Button>
                   <Button className="btn btn-info px-4">
@@ -595,6 +608,20 @@ class NewBond extends Component {
             </Form>
           </div>
         </div>
+        <Modal
+          isOpen={showPDF}
+          centered={true}
+          size="lg"
+        >
+          <ModalHeader toggle={() => {this.setState({showPDF: false})}}>
+            Tender Bond Request Form
+          </ModalHeader>
+          <ModalBody>
+            <PDF
+              filename={'/files/' + bond_no + '.pdf'}
+            />
+          </ModalBody>
+        </Modal>
         <NotificationContainer />
       </div>
     )
