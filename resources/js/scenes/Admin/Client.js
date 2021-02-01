@@ -91,7 +91,7 @@ class Client extends Component {
   }
 
   async addClient() {
-    const { user_type, email, legal } = this.state;
+    const { user, user_type, email, legal } = this.state;
 
     const re = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
     const validate = re.test(String(email).toLowerCase());
