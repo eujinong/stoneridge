@@ -71,7 +71,7 @@ class BondController extends Controller
     $data['created_at'] = date('Y-m-d H:i:s');
     $data['updated_at'] = date('Y-m-d H:i:s');
 
-    // Bond::create($data);
+    Bond::create($data);
 
     $client = User::find($data['client_id']);
     $data['legal'] = $client->legal;
