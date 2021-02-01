@@ -36,7 +36,6 @@ class CreateBondsTable extends Migration
             $table->char('schedule', 1);
             $table->float('holdback_amount', 10, 2);
             $table->string('sublet', 256);
-            $table->string('work_hand', 256);
             $table->timestamps();
         });
     }

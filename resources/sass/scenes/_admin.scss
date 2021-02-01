@@ -157,6 +157,75 @@ body {
           }
         }
       }
+
+      &.container {
+        .input-group {
+          .input-group-prepend,
+          .input-group-append {
+            .input-group-text {
+              background-color: #FFFFFF;
+              border: none;
+              border-bottom: 1px solid #ced4da;
+              border-radius: 0;
+            }
+          }
+        }
+
+        input {
+          border: none;
+          border-bottom: 1px solid #ced4da;
+          border-radius: 0;
+
+          &.error {
+            border-bottom: 1px solid #e3342f;
+          }
+        }
+
+        .form-group {
+          margin-bottom: 20px;
+
+          label {
+            font-size: 16px;
+            margin-bottom: 0;
+          }
+
+          input[type=text] {
+            font-size: 16px;
+            height: 28px;
+
+            &:disabled {
+              background-color: #FFFFFF;
+              color: #808080;
+            }
+          }
+
+          .react-datepicker-wrapper {
+            width: 100%;
+          }
+        }
+
+        .btn {
+          font-size: 16px;
+
+          &.btn-primary {
+            &:hover {
+              background-color: #025EAD;
+              border-color: #025EAD;
+            }
+          }
+
+          &.btn-info {
+            background-color: #A32CC4;
+            border-color: #A32CC4;
+            color: #FFFFFF;
+
+            &:hover {
+              background-color: #710193;
+              border-color: #710193;
+            }
+          }
+        }
+      }
     }
   }
 

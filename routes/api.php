@@ -28,5 +28,6 @@ Route::namespace('Api')->group(function () {
         Route::get('attorneys', 'UserController@attorneys');
 
         Route::get('bonds', 'BondController@index');
+        Route::post('add-bond','BondController@store');
     });
 });

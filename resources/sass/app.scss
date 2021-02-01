@@ -5,8 +5,8 @@
 @import "semantic";
 @import 'variables';
 
-// Bootstrap
 @import '~bootstrap/scss/bootstrap';
+@import "~react-notifications/lib/notifications.css";
 
 @import "../lib/font-awesome/scss/light";
 @import "../lib/font-awesome/scss/regular";
