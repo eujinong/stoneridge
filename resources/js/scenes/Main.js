@@ -11,6 +11,7 @@ import Client from './Admin/Client';
 import Bond from './Admin/Bond';
 import Attorney from './Admin/Attorney';
 import NewBond from './Client/NewBond';
+import EditBond from './Client/EditBond';
 import MyBond from './Client/MyBond';
 import MyClient from './Attorney/MyClient';
 import Profile from './Profile';
@@ -37,6 +38,7 @@ class Main extends Component {
           <AuthRoute path="/attorneys" name="Attorney" component={Attorney} />
           <AuthRoute path="/profile" name="Profile" component={Profile} />
           <AuthRoute path="/new-bond" name="NewBond" component={NewBond} />
+          <AuthRoute path="/my-bonds/detail" name="EditBond" component={EditBond} />
           <AuthRoute path="/my-bonds" name="MyBond" component={MyBond} />
           <AuthRoute path="/my-clients" name="MyClient" component={MyClient} />
         </Switch>

@@ -50,34 +50,34 @@
     Contract No.: {{$data['contract_no']}}
   </div>
   <div style="height: 30px; width: 100%">
-    Estimated Contract Price: {{$data['contract_price']}}
+    Estimated Contract Price: ${{$data['contract_price']}}
   </div>
   <div style="font-weight: bold; height: 30px; width: 100%">
-    Bid Bond:
+    Bid Bond: {{$data['bid_bond'] == 1 ? 'YES' : 'NO'}}
   </div>
   <div style="height: 30px; margin-left: 50px; width: 100%">
-    Stipulated Amount: {{$data['stipulate_amount']}}
+    Stipulated Amount: ${{$data['stipulate_amount']}}
   </div>
   <div style="height: 30px; margin-left: 50px; width: 100%">
-    Percentage Amount: {{$data['percentage_amount']}}
+    Percentage Amount: {{$data['percentage_amount']}}%
   </div>
   <div style="font-weight: bold; height: 30px; width: 100%">
-    Agreement to Bond:
+    Agreement to Bond: {{$data['agree_bond'] == 1 ? 'YES' : 'NO'}}
   </div>
   <div style="height: 30px; margin-left: 50px; width: 100%">
-    Performance Bond: {{$data['performance_bond']}}
+    Performance Bond: {{$data['performance_bond']}}%
   </div>
   <div style="height: 30px; margin-left: 50px; width: 100%">
-    Labour & Material Bond: {{$data['lmpayment_bond']}}
+    Labour & Material Bond: {{$data['lmpayment_bond']}}%
   </div>
   <div style="height: 30px; width: 100%">
-    Maintenance Warranty: {{$data['warranty']}} years
+    Maintenance Warranty: {{$data['warranty']}}
   </div>
   <div style="height: 30px; width: 100%">
     Acceptance Period: {{$data['accept_period']}} days
   </div>
   <div style="height: 30px; width: 100%">
-    Penalty Clause (liquidated damages): {{$data['penalty_clause']}}
+    Penalty Clause (liquidated damages): ${{$data['penalty_clause']}}
   </div>
   <div style="height: 30px; width: 100%">
     Time to Complete: Completion {{date('M. d, Y', strtotime($data['end_date']))}}
@@ -86,7 +86,7 @@
     Schedule:
   </div>
   <div style="height: 30px; width: 100%">
-    Holdback Amount: {{$data['holdback_amount']}}
+    Holdback Amount: ${{$data['holdback_amount']}}
   </div>
   <div style="height: 30px; width: 100%">
     Sublet (type of work & approximate value):

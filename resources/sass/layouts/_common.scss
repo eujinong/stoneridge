@@ -7,46 +7,55 @@ body {
     border-color: #0080FF;
   }
 
-  .add-client {
-    .modal-content {
-      border: none;
+  .modal-content {
+    border: none;
 
-      .modal-header {
-        background-color: #0080FF;
+    .modal-header {
+      background-color: #0080FF;
+      color: #FFFFFF;
+
+      .modal-title {
+        font-size: 18px;
+      }
+
+      .close {
         color: #FFFFFF;
+        font-size: 28px;
+        opacity: 1;
+      }
+    }
 
-        .close {
-          color: #FFFFFF;
-          opacity: 1;
+    .modal-body {
+      font-size: 15px;
+
+      .row>div {
+        line-height: 36px;
+      }
+      
+      input[type=text] {
+        border: none;
+        border-bottom: 1px solid #ced4da;
+        border-radius: 0;
+
+        &.error {
+          border-bottom: 1px solid #e3342f;
         }
       }
 
-      .modal-body {
-        input[type=text] {
-          border: none;
-          border-bottom: 1px solid #ced4da;
-          border-radius: 0;
-
-          &.error {
-            border-bottom: 1px solid #e3342f;
-          }
-        }
-
-        .imagePreview {
-          img {
-            height: 100%;
-            margin-top: 10px;
-            width: 100%;
-          }
+      .imagePreview {
+        img {
+          height: 100%;
+          margin-top: 10px;
+          width: 100%;
         }
       }
+    }
 
-      .modal-footer {
-        border-top: none;
+    .modal-footer {
+      border-top: none;
 
-        button {
-          border-radius: 12px;
-        }
+      button {
+        border-radius: 12px;
       }
     }
   }

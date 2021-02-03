@@ -238,7 +238,6 @@ class Attorney extends Component {
         </div>
 
         <Modal
-          className="add-client"
           isOpen={showModal}
           centered={true}
           size="md"
@@ -297,7 +296,6 @@ class Attorney extends Component {
         </Modal>
 
         <Modal
-          className="add-client"
           isOpen={view}
           centered={true}
           size="md"
@@ -338,7 +336,6 @@ class Attorney extends Component {
         </Modal>
 
         <Modal
-          className="add-client"
           isOpen={editable}
           centered={true}
           size="md"

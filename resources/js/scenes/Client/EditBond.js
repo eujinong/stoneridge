@@ -17,7 +17,7 @@ import SideBar from '../../components/SideBar';
 
 import Bitmaps from '../../theme/Bitmaps';
 
-class NewBond extends Component {
+class EditBond extends Component {
   constructor(props) {
     super(props);
 
@@ -52,22 +52,52 @@ class NewBond extends Component {
     }
   }
 
-  componentDidMount() {
+  async componentDidMount() {
     const auth = JSON.parse(localStorage.getItem('auth'));
     const user = auth.user;
 
-    const close_date = this.formatDate(new Date());
-    const close_time = this.formatTime(new Date());
-    const start_date = this.formatDate(new Date());
-    const end_date = this.formatDate(new Date());
-
     this.setState({
-      close_date,
-      close_time,
-      start_date,
-      end_date,
       user
     });
+
+    const id = this.props.location.state;
+
+    const data = await Api.get(`bond/${id}`);
+    const { response, body } = data;
+    switch (response.status) {
+      case 200:
+        const bond = body.bond;
+
+        this.setState({
+          bond_no: bond.bond_no,
+          closing: new Date(bond.close_date),
+          close_date: bond.close_date,
+          close_time: bond.close_time,
+          obligee: bond.obligee,
+          description: bond.description,
+          contract_no: bond.contract_no,
+          contract_price: bond.contract_price,
+          bid_bond: bond.bid_bond,
+          stipulate_amount: bond.stipulate_amount,
+          percentage_amount: bond.percentage_amount,
+          agree_bond: bond.agree_bond,
+          performance_bond: bond.performance_bond,
+          lmpayment_bond: bond.lmpayment_bond,
+          accept_period: bond.accept_period,
+          schedule: bond.schedule,
+          warranty: bond.warranty,
+          penalty_clause: bond.penalty_clause,
+          start: new Date(bond.start_date),
+          start_date: bond.start_date,
+          end: new Date(bond.end_date),
+          end_date: bond.end_date,
+          holdback_amount: bond.holdback_amount,
+          sublet: bond.sublet
+        });
+        break;
+      default:
+        break;
+    }
   }
 
   formatDate(date) {
@@ -140,7 +170,10 @@ class NewBond extends Component {
   }
 
   async handleSave(mode) {
+    const id = this.props.location.state;
+
     const {
+      bond_no,
       close_date, close_time,
       obligee, description,
       contract_no, contract_price,
@@ -155,6 +188,7 @@ class NewBond extends Component {
     } = this.state;
     
     const params = {
+      bond_no,
       client_id: user.id,
       bid_bond: bid_bond ? 1 : 0,
       agree_bond: agree_bond ? 1 : 0,
@@ -170,13 +204,12 @@ class NewBond extends Component {
       holdback_amount, sublet
     }
 
-    const data = await Api.post('bond', params);
+    const data = await Api.put(`bond/${id}`, params);
     const { response, body } = data;
     switch (response.status) {
       case 200:
         this.setState({
-          showPDF: mode == 'print' ? true : false,
-          bond_no: body.bond_no
+          showPDF: mode == 'print' ? true : false
         });
         this.setNotifications('success', body.message);
         break;
@@ -609,4 +642,4 @@ class NewBond extends Component {
   }
 }
 
-export default withRouter(NewBond);
+export default withRouter(EditBond);

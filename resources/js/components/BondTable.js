@@ -171,7 +171,9 @@ class BondTable extends Component {
                 >
                   <Table.Cell className="text-center">{item.bond_no}</Table.Cell>
                   <Table.Cell className="text-center">{item.type}</Table.Cell>
-                  <Table.Cell className="text-center">{item.created_at}</Table.Cell>
+                  <Table.Cell className="text-center">
+                    {item.created_at.substring(0, 16)}
+                  </Table.Cell>
                   <Table.Cell className="text-center">
                     <a
                       className="mx-2"
@@ -181,7 +183,7 @@ class BondTable extends Component {
                     </a>
                     <a
                       className="mx-2"
-                      onClick={() => onPrint(item.id)}
+                      onClick={() => onPrint(item.bond_no)}
                     >
                       <i className="fa fa-print"></i>
                     </a>

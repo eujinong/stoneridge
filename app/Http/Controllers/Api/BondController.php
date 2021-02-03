@@ -21,6 +21,16 @@ class BondController extends Controller
 		], 200);
   }
 
+  public function get($id)
+  {
+    $bond = Bond::find($id);
+
+    return response()->json([
+			'status' => 'success',
+			'bond' => $bond
+		], 200);
+  }
+
   public function store(Request $request)
   {
     $data = $request->all();
@@ -85,6 +95,48 @@ class BondController extends Controller
       'status' => 'success',
       'message' => 'Your Bond Request processed successfully!',
       'bond_no' => $bond_no
+		], 200);
+  }
+
+  public function update($id, Request $request)
+  {
+    $data = $request->all();
+
+    foreach ($data as $key => $value) {
+      if (is_null($value)) {
+        $data[$key] = '';
+      }
+    }
+
+    Bond::where('id', $id)->update($data);
+
+    $client = User::find($data['client_id']);
+    $data['legal'] = $client->legal;
+
+    Storage::disk('local')->delete($data['bond_no'] . '.pdf');
+
+    $pdf = PDF::loadView('pdf',array('data' => $data));
+    $pdf->save('files/' . $data['bond_no'] . '.pdf');
+
+    return response()->json([
+      'status' => 'success',
+      'message' => 'Your Bond Request processed successfully!'
+		], 200);
+  }
+
+  public function destroy($id)
+  {
+    $bond = Bond::find($id);
+
+    Storage::disk('local')->delete($bond->bond_no . '.pdf');
+
+    Bond::where('id', $id)->delete();
+
+    $bonds = Bond::get();
+
+    return response()->json([
+			'status' => 'success',
+			'bonds' => $bonds
 		], 200);
   }
 }

@@ -263,7 +263,6 @@ class Client extends Component {
         </div>
 
         <Modal
-          className="add-client"
           isOpen={showModal}
           centered={true}
           size="md"
@@ -341,7 +340,6 @@ class Client extends Component {
         </Modal>
 
         <Modal
-          className="add-client"
           isOpen={editable}
           centered={true}
           size="md"
