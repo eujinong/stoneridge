@@ -1,7 +1,9 @@
 import React, { Component } from 'react';
 import { withRouter } from 'react-router-dom';
 import {
-  FormGroup, Label, Input
+  Modal, ModalHeader, ModalBody, ModalFooter,
+  Row, Col,
+  FormGroup, Input, Button
 } from 'reactstrap';
 
 import Api from '../../apis/app';
@@ -19,7 +21,13 @@ class Bond extends Component {
       showMenu: false,
       bonds: [],
       filtered: [],
-      filter: ''
+      filter: '',
+      showBond: false,
+      bond: [],
+      showPDF: false,
+      bond_no: '',
+      showDelete: false,
+      del_id: ''
     }
 
     this.handleFilter = this.handleFilter.bind(this);
@@ -53,31 +61,70 @@ class Bond extends Component {
     });
   }
 
-  handleView() {
+  handleView(id) {
+    const { bonds } = this.state;
 
+    let bond = bonds.filter(item => item.id == id)[0];
+    
+    this.setState({
+      showBond: true,
+      bond
+    });
   }
 
-  handlePrint() {
-
+  handlePrint(bond_no) {
+    this.setState({
+      showPDF: true,
+      bond_no
+    });
   }
 
-  handleEdit() {
-
+  handleEdit(id) {
+    this.props.history.push('my-bonds/detail', id);
   }
 
   handleSend() {
     
   }
 
-  handleDelete() {
+  handleDelete(id) {
+    this.setState({
+      showDelete: true,
+      del_id: id
+    });
+  }
 
+  async deleteBond() {
+    const auth = JSON.parse(localStorage.getItem('auth'));
+    const user = auth.user;
+    
+    const { del_id } = this.state;
+
+    const data = await Api.delete(`bond/${del_id}`);
+    const { response, body } = data;
+    switch (response.status) {
+      case 200:
+        this.setState({
+          bonds: body.bonds.filter(item => item.client_id == user.id),
+          filtered: body.bonds.filter(item => item.client_id == user.id),
+          showDelete: false
+        });
+        break;
+      default:
+        break;
+    }
   }
 
   render() {
     const {
       showMenu,
       filtered,
-      filter
+      filter,
+      showBond,
+      bond,
+      showPDF,
+      bond_no,
+      showDelete,
     } = this.state;
 
     return (
@@ -118,6 +165,153 @@ class Bond extends Component {
             </div>
           </div>
         </div>
+
+        <Modal
+          isOpen={showBond}
+          centered={true}
+          size="lg"
+        >
+          <ModalHeader toggle={() => {this.setState({showBond: false})}}>
+            Tender Bond Request Form
+          </ModalHeader>
+          <ModalBody>
+            <Row>
+              <Col sm="6">
+                Insured Legal Name: {bond.legal}
+              </Col>
+              <Col sm="6">
+                Closing Date & Time: {bond.close_date}, {bond.close_time}
+              </Col>
+            </Row>
+            <Row>
+              <Col sm="6">
+                Obligee (Owner): {bond.obligee}
+              </Col>
+              <Col sm="6">
+                Job Description: {bond.description}
+              </Col>
+            </Row>
+            <Row>
+              <Col sm="6">
+                Contract No.: {bond.contract_no}
+              </Col>
+              <Col sm="6">
+                Estimated Contract Price: ${bond.contract_price}
+              </Col>
+            </Row>
+            <Row>
+              <Col sm="12">
+                Bid Bond: {bond.bid_bond == 1 ? 'YES' : 'NO'}
+              </Col>
+            </Row>
+            <Row>
+              <Col sm="6">
+                Stipulated Amount: ${bond.stipulate_amount}
+              </Col>
+              <Col sm="6">
+                Percentage Amount: {bond.percentage_amount}%
+              </Col>
+            </Row>
+            <Row>
+              <Col sm="12">
+                Agreement Bond: {bond.agree_bond == 1 ? 'YES' : 'NO'}
+              </Col>
+            </Row>
+            <Row>
+              <Col sm="6">
+                Performance Bond: {bond.performance_bond}%
+              </Col>
+              <Col sm="6">
+                L&M Payment Bond: {bond.lmpayment_bond}%
+              </Col>
+            </Row>
+            <Row>
+              <Col sm="6">
+                Acceptance Period: {bond.accept_period} days
+              </Col>
+              <Col sm="6">
+                Schedule: {bond.schedule == 'O' ? 'Own Schedule' : 'Contract Schedule'}
+              </Col>
+            </Row>
+            <Row>
+              <Col sm="6">
+                Maintenance Warranty: {bond.warranty}
+              </Col>
+              <Col sm="6">
+                Penalty Clause (Liquidated Damages): ${bond.penalty_clause}
+              </Col>
+            </Row>
+            <Row>
+              <Col sm="6">
+                Project Start Date: {bond.start_date}
+              </Col>
+              <Col sm="6">
+                Project End Date: {bond.end_date}
+              </Col>
+            </Row>
+            <Row>
+              <Col sm="12">
+                Holdback Amount: ${bond.holdback_amount}
+              </Col>
+            </Row>
+            <Row>
+              <Col sm="12">
+                Sublet (Type of work & Approximate Value):
+              </Col>
+            </Row>
+            <Row>
+              <Col sm="12">
+                {bond.sublet}
+              </Col>
+            </Row>
+          </ModalBody>
+        </Modal>
+
+        <Modal
+          isOpen={showPDF}
+          centered={true}
+          size="lg"
+        >
+          <ModalHeader toggle={() => {this.setState({showPDF: false})}}>
+            Tender Bond Request Form
+          </ModalHeader>
+          <ModalBody>
+            <iframe
+              src={`${window.location.origin}` + '/files/' + bond_no + '.pdf'}
+              style={{
+                height: '70vh',
+                width: '100%'
+              }}
+            />
+          </ModalBody>
+        </Modal>
+
+        <Modal
+          isOpen={showDelete}
+          centered={true}
+          size="sm"
+        >
+          <ModalHeader toggle={() => {this.setState({showDelete: false})}}>
+            Tender Bond Request Form
+          </ModalHeader>
+          <ModalBody>
+            Do you want to delete this Bond now?
+          </ModalBody>
+          <ModalFooter>
+            <Button
+              color="default"
+              onClick={() => {this.setState({showDelete: false})}}
+            >
+              Cancel
+            </Button>
+            <Button
+              color="danger"
+              onClick={this.deleteBond.bind(this)}
+            >
+              Delete
+            </Button>
+          </ModalFooter>
+        </Modal>
       </div>
     )
   }

@@ -188,7 +188,7 @@ class MyBond extends Component {
           <ModalBody>
             <Row>
               <Col sm="6">
-                Insured Legal Name: {user && user.legal}
+                Insured Legal Name: {bond.legal}
               </Col>
               <Col sm="6">
                 Closing Date & Time: {bond.close_date}, {bond.close_time}

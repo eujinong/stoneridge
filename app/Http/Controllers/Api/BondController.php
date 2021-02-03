@@ -13,7 +13,9 @@ class BondController extends Controller
 {
   public function index()
   {
-    $bonds = Bond::get();
+    $bonds = Bond::leftJoin('users', 'users.id', '=', 'bonds.client_id')
+                ->select('bonds.*', 'users.legal')
+                ->get();
 
     return response()->json([
 			'status' => 'success',
@@ -23,7 +25,10 @@ class BondController extends Controller
 
   public function get($id)
   {
-    $bond = Bond::find($id);
+    $bond = Bond::leftJoin('users', 'users.id', '=', 'bonds.client_id')
+                ->where('bonds.id', $id)
+                ->select('bonds.*', 'users.legal')
+                ->first();
 
     return response()->json([
 			'status' => 'success',
@@ -132,7 +137,9 @@ class BondController extends Controller
 
     Bond::where('id', $id)->delete();
 
-    $bonds = Bond::get();
+    $bonds = Bond::leftJoin('users', 'users.id', '=', 'bonds.client_id')
+                ->select('bonds.*', 'users.legal')
+                ->get();
 
     return response()->json([
 			'status' => 'success',

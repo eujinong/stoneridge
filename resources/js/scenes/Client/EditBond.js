@@ -24,6 +24,8 @@ class EditBond extends Component {
     this.state = {
       showMenu: false,
       showPDF: false,
+      legal: '',
+      client_id: '',
       bond_no: '',
       closing: new Date(),
       close_date: '',
@@ -69,6 +71,8 @@ class EditBond extends Component {
         const bond = body.bond;
 
         this.setState({
+          legal: bond.legal,
+          client_id: bond.client_id,
           bond_no: bond.bond_no,
           closing: new Date(bond.close_date),
           close_date: bond.close_date,
@@ -173,6 +177,7 @@ class EditBond extends Component {
     const id = this.props.location.state;
 
     const {
+      client_id,
       bond_no,
       close_date, close_time,
       obligee, description,
@@ -183,13 +188,12 @@ class EditBond extends Component {
       accept_period, schedule,
       warranty, penalty_clause,
       start_date, end_date,
-      holdback_amount, sublet,
-      user
+      holdback_amount, sublet
     } = this.state;
     
     const params = {
       bond_no,
-      client_id: user.id,
+      client_id,
       bid_bond: bid_bond ? 1 : 0,
       agree_bond: agree_bond ? 1 : 0,
       type: bid_bond ? 'B' : 'A',
@@ -224,6 +228,7 @@ class EditBond extends Component {
     const {
       showMenu,
       showPDF,
+      legal,
       bond_no,
       closing,
       obligee, description,
@@ -264,7 +269,7 @@ class EditBond extends Component {
                     <Input
                       type="text"
                       name="legal"
-                      value={user && user.legal ? user.legal : ''}
+                      value={legal}
                       disabled
                     />
                   </FormGroup>
