@@ -2,6 +2,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\User;
+use App\Client;
 use App\Bond;
 
 use Illuminate\Http\Request;
@@ -25,9 +26,9 @@ class BondController extends Controller
 
   public function get($id)
   {
-    $bond = Bond::leftJoin('users', 'users.id', '=', 'bonds.client_id')
+    $bond = Bond::leftJoin('clients', 'clients.user_id', '=', 'bonds.client_id')
                 ->where('bonds.id', $id)
-                ->select('bonds.*', 'users.legal')
+                ->select('bonds.*', 'clients.legal')
                 ->first();
 
     return response()->json([
@@ -83,12 +84,9 @@ class BondController extends Controller
       }
     }
 
-    $data['created_at'] = date('Y-m-d H:i:s');
-    $data['updated_at'] = date('Y-m-d H:i:s');
-
     Bond::create($data);
 
-    $client = User::find($data['client_id']);
+    $client = Client::where('user_id', $data['client_id'])->first();
     $data['legal'] = $client->legal;
 
     Storage::disk('local')->delete($bond_no . '.pdf');
@@ -115,7 +113,7 @@ class BondController extends Controller
 
     Bond::where('id', $id)->update($data);
 
-    $client = User::find($data['client_id']);
+    $client = Client::where('user_id', $data['client_id'])->first();
     $data['legal'] = $client->legal;
 
     Storage::disk('local')->delete($data['bond_no'] . '.pdf');

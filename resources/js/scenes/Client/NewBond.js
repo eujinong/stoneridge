@@ -167,7 +167,8 @@ class NewBond extends Component {
       accept_period, schedule,
       warranty, penalty_clause,
       start_date, end_date,
-      holdback_amount, sublet
+      holdback_amount, sublet,
+      status: 'pending'
     }
 
     const data = await Api.post('bond', params);
