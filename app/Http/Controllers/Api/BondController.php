@@ -135,8 +135,8 @@ class BondController extends Controller
 
     Bond::where('id', $id)->delete();
 
-    $bonds = Bond::leftJoin('users', 'users.id', '=', 'bonds.client_id')
-                ->select('bonds.*', 'users.legal')
+    $bonds = Bond::leftJoin('clients', 'clients.id', '=', 'bonds.client_id')
+                ->select('bonds.*', 'clients.legal')
                 ->get();
 
     return response()->json([
