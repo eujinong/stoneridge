@@ -269,6 +269,7 @@ class Client extends Component {
       user_type,
       email,
       legal,
+      attorney,
       validate,
       errMsg
     } = this.state;
@@ -408,7 +409,10 @@ class Client extends Component {
             </Button>
             <Button
               color="primary"
-              disabled={email == '' || legal == ''}
+              disabled={
+                email == '' || legal == '' ||
+                (user_type == 'N' && attorney == '')
+              }
               onClick={this.addClient.bind(this)}
             >
               Save
