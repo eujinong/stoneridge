@@ -32,5 +32,6 @@ Route::namespace('Api')->group(function () {
         Route::post('bond','BondController@store');
         Route::put('bond/{id}', 'BondController@update');
         Route::delete('bond/{id}', 'BondController@destroy');
+        Route::get('send-bond/{id}', 'BondController@send');
     });
 });

@@ -7,6 +7,7 @@ use App\Bond;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\URL;
 
 use PDF;
 
@@ -142,6 +143,30 @@ class BondController extends Controller
     return response()->json([
 			'status' => 'success',
 			'bonds' => $bonds
+		], 200);
+  }
+
+  public function send($id)
+  {
+    $bond = Bond::leftJoin('users', 'users.id', '=', 'bonds.client_id')
+                ->leftJoin('clients', 'clients.user_id', '=', 'bonds.client_id')
+                ->leftJoin('users AS att', 'att.id', '=', 'clients.attorney')
+                ->where('bonds.id', $id)
+                ->select('bonds.bond_no', 'users.email AS from', 'att.email AS to')
+                ->first();
+
+    $message = "Hi\r\n";
+		$message .= "A new Bond is created from " . $bond['from'] . "on Stoneridge Tender Bond Portal.\r\n";
+		$message .= "Please find attachment for more information.\r\n";
+		$message .= URL::to('/') . "/files/" . $bond['bond_no'] . ".pdf\r\n";
+		$message .= "Best Regards.\r\n\r\nStoneridege Team";
+
+		$headers = "From: admin@stoneridge.com";
+
+    mail($data['to'], "Welcome to StoneRidge", $message, $headers);
+    
+    return response()->json([
+			'status' => 'success'
 		], 200);
   }
 }
