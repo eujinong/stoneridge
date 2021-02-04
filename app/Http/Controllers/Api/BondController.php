@@ -189,5 +189,10 @@ class BondController extends Controller
 		$headers = "From: admin@stoneridge.com";
 
     mail($bond['to'], "Welcome to StoneRidge", $message, $headers);
+
+    Bond::where('bond_no', $bond_no)
+        ->update(array(
+          'status' => 'sent'
+        ));
   }
 }
