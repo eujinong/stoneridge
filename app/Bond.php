@@ -37,7 +37,6 @@ class Bond extends Model
         'schedule',
         'holdback_amount',
         'sublet',
-        'created_at',
-        'updated_at'
+        'status'
     ];
 }

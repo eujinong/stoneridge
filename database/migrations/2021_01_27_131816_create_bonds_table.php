@@ -24,8 +24,10 @@ class CreateBondsTable extends Migration
             $table->string('description', 120);
             $table->string('contract_no', 60);
             $table->float('contract_price', 10, 2);
+            $table->boolean('bid_bond');
             $table->float('stipulate_amount', 10, 2);
             $table->float('percentage_amount', 10, 2);
+            $table->boolean('agree_bond');
             $table->float('performance_bond', 10, 2);
             $table->float('lmpayment_bond', 10, 2);
             $table->string('warranty', 120);
@@ -36,6 +38,7 @@ class CreateBondsTable extends Migration
             $table->char('schedule', 1);
             $table->float('holdback_amount', 10, 2);
             $table->string('sublet', 256);
+            $table->string('status', 20);
             $table->timestamps();
         });
     }

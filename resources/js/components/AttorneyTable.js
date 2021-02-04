@@ -170,7 +170,7 @@ class AttorneyTable extends Component {
                 >
                   <Table.Cell className="text-center">{index + 1}</Table.Cell>
                   <Table.Cell className="text-center">{item.email}</Table.Cell>
-                  <Table.Cell className="text-center">{item.legal}</Table.Cell>
+                  <Table.Cell className="text-center">{item.name}</Table.Cell>
                   <Table.Cell className="text-center">{item.clients || 0}</Table.Cell>
                   <Table.Cell className="text-center">
                     {

@@ -2,6 +2,8 @@
 namespace App\Http\Controllers\Api;
 
 use App\User;
+use App\Attorney;
+use App\Client;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
@@ -55,6 +57,14 @@ class UserController extends Controller
 		}
 
 		$user = User::where('email', $request->email)->first();
+
+		if ($user->user_type == 'A') {
+			$attorney = Attorney::where('user_id', $user->id)->first();
+			$user->legal = $attorney->name;
+		} else {
+			$client = Client::where('user_id', $user->id)->first();
+			$user->legal = $client->legal;
+		}
 
 		if ($user->active == 0) {
 			return response()->json(
@@ -145,6 +155,68 @@ class UserController extends Controller
 			);
 		}
 
+		if ($data['user_type'] == 'A') {
+			$data['signature'] = "";
+
+			$base64_image = $request->input('signature');
+
+			if ($base64_image != '') {
+				if (preg_match('/^data:image\/(\w+);base64,/', $base64_image)) {
+					$pos  = strpos($base64_image, ';');
+					$type = explode(':', substr($base64_image, 0, $pos))[1];
+
+					if (substr($type, 0, 5) == 'image') {
+						$filename = preg_replace('/[^A-Za-z0-9\-]/', '', $data['name']) . '-' . date('Ymd_His');
+
+						$type = str_replace('image/', '.', $type);
+
+						$size = (int) (strlen(rtrim($base64_image, '=')) * 3 / 4);
+
+						if ($size < 1050000) {
+							$image = substr($base64_image, strpos($base64_image, ',') + 1);
+							$image = base64_decode($image);
+							
+							Storage::disk('local')->put($filename . $type, $image);
+			
+							$data['signature'] = "files/" . $filename . $type;
+						} else {
+							return response()->json(
+								[
+									'status' => 'error',
+									'message' => 'File size must be less than 1MB.'
+								],
+								406
+							);
+						}
+					} else {
+						return response()->json(
+							[
+								'status' => 'error',
+								'message' => 'File type is not image.'
+							],
+							406
+						);
+					}
+				} else {
+					return response()->json(
+						[
+							'status' => 'error',
+							'message' => 'File type is not image.'
+						],
+						406
+					);
+				}
+			} else {
+				return response()->json(
+					[
+						'status' => 'error',
+						'message' => 'Signature is required.'
+					],
+					406
+				);
+			}
+		}
+
 		$characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
 
 		$password = '';
@@ -163,153 +235,164 @@ class UserController extends Controller
 		$headers = "From: admin@stoneridge.com";
 
 		mail($data['email'], "Welcome to StoneRidge", $message, $headers);
-		
-		$data['signature'] = "";
 
-		$base64_image = $request->input('signature');
-
-		if ($base64_image != '' && preg_match('/^data:image\/(\w+);base64,/', $base64_image)) {
-      $pos  = strpos($base64_image, ';');
-      $type = explode(':', substr($base64_image, 0, $pos))[1];
-
-      if (substr($type, 0, 5) == 'image') {
-        $filename = preg_replace('/[^A-Za-z0-9\-]/', '', $data['legal']) . '-' . date('Ymd_His');
-
-        $type = str_replace('image/', '.', $type);
-
-        $size = (int) (strlen(rtrim($base64_image, '=')) * 3 / 4);
-
-        if ($size < 1050000) {
-          $image = substr($base64_image, strpos($base64_image, ',') + 1);
-          $image = base64_decode($image);
-          
-          Storage::disk('local')->put($filename . $type, $image);
-  
-          $data['signature'] = "files/" . $filename . $type;
-        } else {
-          return response()->json(
-            [
-              'status' => 'error',
-              'message' => 'File size must be less than 1MB.'
-            ],
-            406
-          );
-        }
-      } else {
-        return response()->json(
-          [
-            'status' => 'error',
-            'message' => 'File type is not image.'
-          ],
-          406
-        );
-      }
-    }
-
-		User::create(array(
+		$user = User::create(array(
 			'email' => $data['email'],
 			'password' => Hash::make($password),
 			'user_type' => $data['user_type'],
-			'last_bond_number' => 0,
-			'legal' => $data['legal'],
-			'signature' => $data['signature'],
 			'active' => 0
 		));
 
-		$clients = User::where('user_type', '!=', 'S')
-									->where('user_type', '!=', 'A')
-									->orderBy('id', 'DESC')
+		if ($data['user_type'] == 'A') {
+			Attorney::create(array(
+				'user_id' => $user->id,
+				'name' => $data['name'],
+				'signature' => $data['signature']
+			));
+
+			$attorneys = Attorney::leftJoin('users', 'users.id', '=', 'attorneys.user_id')
+									->select('users.*', 'attorneys.name', 'attorneys.signature')
+									->orderBy('users.id', 'DESC')
 									->get();
 
-		$attorneys = User::where('user_type', 'A')
-									->orderBy('id', 'DESC')
-									->get();
+			return response()->json([
+				'status' => 'success',
+				'attorneys' => $attorneys
+			], 200);
+		} else {
+			Client::create(array(
+				'user_id' => $user->id,
+				'legal' => $data['legal'],
+				'attorney' => $data['attorney']
+			));
 
-		return response()->json([
-			'status' => 'success',
-			'clients' => $clients,
-			'attorneys' => $attorneys
-		], 200);
+			$clients = Client::leftJoin('users', 'users.id', '=', 'clients.user_id')
+							->leftJoin('attorneys', 'attorneys.user_id', '=', 'clients.attorney')
+							->where('users.user_type', 'M')
+							->orWhere('users.user_type', 'N')
+							->select('users.*', 'clients.legal', 'attorneys.name')
+							->orderBy('users.id', 'DESC')
+							->get();
+
+			return response()->json([
+				'status' => 'success',
+				'clients' => $clients
+			], 200);
+		}
 	}
 
 	public function update(Request $request)
 	{
 		$data = $request->all();
 
-		$user = User::where('email', $data['email'])->first();
-
-		$data['signature'] = "";
-
-		$base64_image = $request->input('signature');
-
-		if ($base64_image != '' && preg_match('/^data:image\/(\w+);base64,/', $base64_image)) {
-      $pos  = strpos($base64_image, ';');
-      $type = explode(':', substr($base64_image, 0, $pos))[1];
-
-      if (substr($type, 0, 5) == 'image') {
-        $filename = preg_replace('/[^A-Za-z0-9\-]/', '', $data['legal']) . '-' . date('Ymd_His');
-
-        $type = str_replace('image/', '.', $type);
-
-        $size = (int) (strlen(rtrim($base64_image, '=')) * 3 / 4);
-
-        if ($size < 1050000) {
-          $image = substr($base64_image, strpos($base64_image, ',') + 1);
-          $image = base64_decode($image);
-					
-					Storage::disk('local')->delete(str_replace('files/', '', $user->signature));
-          Storage::disk('local')->put($filename . $type, $image);
-  
-          $data['signature'] = "files/" . $filename . $type;
-        } else {
-          return response()->json(
-            [
-              'status' => 'error',
-              'message' => 'File size must be less than 1MB.'
-            ],
-            406
-          );
-        }
-      } else {
-        return response()->json(
-          [
-            'status' => 'error',
-            'message' => 'File type is not image.'
-          ],
-          406
-        );
-      }
-    }
-
 		User::where('email', $data['email'])
 				->update(array(
-					'legal' => $data['legal'],
-					'signature' => $data['signature'],
 					'active' => $data['active']
 				));
 
-		$clients = User::where('user_type', '!=', 'S')
-									->where('user_type', '!=', 'A')
-									->orderBy('id', 'DESC')
-									->get();
+		$user = User::where('email', $data['email'])->first();
 
-		$attorneys = User::where('user_type', 'A')
-									->orderBy('id', 'DESC')
-									->get();
+		if ($user->user_type == 'A') {
+			$attorney = Attorney::where('user_id', $user->id)->first();
 
-		return response()->json([
-			'status' => 'success',
-			'clients' => $clients,
-			'attorneys' => $attorneys
-		], 200);
+			$data['signature'] = $attorney->signature;
+
+			$base64_image = $request->input('signature');
+
+			if ($base64_image != '') {
+				if (preg_match('/^data:image\/(\w+);base64,/', $base64_image)) {
+					$pos  = strpos($base64_image, ';');
+					$type = explode(':', substr($base64_image, 0, $pos))[1];
+
+					if (substr($type, 0, 5) == 'image') {
+						$filename = preg_replace('/[^A-Za-z0-9\-]/', '', $data['name']) . '-' . date('Ymd_His');
+
+						$type = str_replace('image/', '.', $type);
+
+						$size = (int) (strlen(rtrim($base64_image, '=')) * 3 / 4);
+
+						if ($size < 1050000) {
+							$image = substr($base64_image, strpos($base64_image, ',') + 1);
+							$image = base64_decode($image);
+							
+							Storage::disk('local')->delete(str_replace('files/', '', $user->signature));
+							Storage::disk('local')->put($filename . $type, $image);
+			
+							$data['signature'] = "files/" . $filename . $type;
+						} else {
+							return response()->json(
+								[
+									'status' => 'error',
+									'message' => 'File size must be less than 1MB.'
+								],
+								406
+							);
+						}
+					} else {
+						return response()->json(
+							[
+								'status' => 'error',
+								'message' => 'File type is not image.'
+							],
+							406
+						);
+					}
+				} else {
+					return response()->json(
+						[
+							'status' => 'error',
+							'message' => 'File type is not image.'
+						],
+						406
+					);
+				}
+			}
+
+			Attorney::where('user_id', $user->id)
+						->update(array(
+							'name' => $data['name'],
+							'signature' => $data['signature']
+						));
+
+			$attorneys = Attorney::leftJoin('users', 'users.id', '=', 'attorneys.user_id')
+						->select('users.*', 'attorneys.name', 'attorneys.signature')
+						->orderBy('id', 'DESC')
+						->get();
+
+			return response()->json([
+				'status' => 'success',
+				'attorneys' => $attorneys
+			], 200);
+		} else {
+			Client::where('user_id', $user->id)
+						->update(array(
+							'legal' => $data['legal']
+						));
+
+			$clients = Client::leftJoin('users', 'users.id', '=', 'clients.user_id')
+						->leftJoin('attorneys', 'attorneys.user_id', '=', 'clients.attorney')
+						->where('users.user_type', 'M')
+						->orWhere('users.user_type', 'N')
+						->select('users.*', 'clients.legal', 'attorneys.name')
+						->orderBy('users.id', 'DESC')
+						->get();
+
+			return response()->json([
+				'status' => 'success',
+				'clients' => $clients
+			], 200);
+		}
 	}
 	
 	public function clients()
 	{
-		$clients = User::where('user_type', '!=', 'S')
-									->where('user_type', '!=', 'A')
-									->orderBy('id', 'DESC')
-									->get();
+		$clients = Client::leftJoin('users', 'users.id', '=', 'clients.user_id')
+						->leftJoin('attorneys', 'attorneys.user_id', '=', 'clients.attorney')
+						->where('users.user_type', 'M')
+						->orWhere('users.user_type', 'N')
+						->select('users.*', 'clients.legal', 'attorneys.name')
+						->orderBy('users.id', 'DESC')
+						->get();
 
 		return response()->json([
 			'status' => 'success',
@@ -319,7 +402,8 @@ class UserController extends Controller
 
 	public function attorneys()
 	{
-		$attorneys = User::where('user_type', 'A')
+		$attorneys = Attorney::leftJoin('users', 'users.id', '=', 'attorneys.user_id')
+									->select('users.*', 'attorneys.name', 'attorneys.signature')
 									->orderBy('id', 'DESC')
 									->get();
 

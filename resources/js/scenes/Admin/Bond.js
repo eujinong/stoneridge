@@ -34,6 +34,13 @@ class Bond extends Component {
   }
 
   async componentDidMount() {
+    const auth = JSON.parse(localStorage.getItem('auth'));
+    const user = auth.user;
+
+    this.setState({
+      user
+    });
+    
     const data = await Api.get('bonds');
     const { response, body } = data;
     switch (response.status) {
@@ -125,6 +132,7 @@ class Bond extends Component {
       showPDF,
       bond_no,
       showDelete,
+      user
     } = this.state;
 
     return (
@@ -139,9 +147,19 @@ class Bond extends Component {
             <i className="fa fa-bars"></i>
           </a>
 
-          <span className="mb-4 title">Welcome Tender Bond Portal Admin</span>
+          <div className="mb-2 container">
+            <span className="mb-4 title">
+              {
+                (user && user.user_type == 'M') ? (
+                  'Hi ' + user.legal + '! Welcome Tender Bond'
+                ) : (
+                  'Welcome Tender Bond Portal Admin'
+                )
+              }
+            </span>
+          </div>
 
-          <div className="panel">
+          <div className="panel container">
             <FormGroup row className="mx-1 search-container">
               <div className="d-flex">
                 <i className="fa fa-search"></i>

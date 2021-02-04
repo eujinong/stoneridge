@@ -5,6 +5,7 @@ import {
   Row, Col,
   FormGroup, Label, Input, Button, CustomInput
 } from 'reactstrap';
+import { NotificationContainer, NotificationManager } from 'react-notifications';
 
 import Api from '../../apis/app';
 
@@ -29,9 +30,8 @@ class Attorney extends Component {
       imagePreviewUrl: '',
       showModal: false,
       email: '',
-      legal: '',
-      validate: true,
-      errMsg: ''
+      name: '',
+      validate: true
     }
 
     this.handleFilter = this.handleFilter.bind(this);
@@ -46,6 +46,19 @@ class Attorney extends Component {
           attorneys: body.attorneys,
           filtered: body.attorneys
         });
+        break;
+      default:
+        break;
+    }
+  }
+
+  setNotifications(type, message) {
+    switch (type) {
+      case 'success':
+        NotificationManager.success(message, '', 3000);
+        break;
+      case 'error':
+        NotificationManager.error(message, '', 5000);
         break;
       default:
         break;
@@ -72,7 +85,7 @@ class Attorney extends Component {
 
     let filtered = attorneys.filter(
       member => member.email.toUpperCase().includes(str.toUpperCase()) || 
-      member.legal.toUpperCase().includes(str.toUpperCase())
+      member.name.toUpperCase().includes(str.toUpperCase())
     );
 
     this.setState({
@@ -84,7 +97,7 @@ class Attorney extends Component {
   async addAttorney() {
     const {
       email,
-      legal,
+      name,
       imagePreviewUrl
     } = this.state;
 
@@ -98,7 +111,7 @@ class Attorney extends Component {
     if (validate) {
       const params = {
         email,
-        legal,
+        name,
         signature: imagePreviewUrl,
         user_type: 'A'
       }
@@ -113,11 +126,10 @@ class Attorney extends Component {
             imagePreviewUrl: '',
             showModal: false
           });
+          this.setNotifications('success', 'New attorney is added successfully.');
           break;
         case 406:
-          this.setState({
-            errMsg: body.message
-          });
+          this.setNotifications('error', body.message);
           break;
         default:
           break;
@@ -152,7 +164,7 @@ class Attorney extends Component {
 
     const params = {
       email: editItem.email,
-      legal: editItem.legal,
+      name: editItem.name,
       signature: imagePreviewUrl,
       active: editItem.active
     }
@@ -167,6 +179,10 @@ class Attorney extends Component {
             imagePreviewUrl: '',
             editable: false
           });
+          this.setNotifications('success', 'The attorney is updated successfully.');
+          break;
+        case 406:
+          this.setNotifications('error', body.message);
           break;
         default:
           break;
@@ -185,9 +201,8 @@ class Attorney extends Component {
       imagePreviewUrl,
       showModal,
       email,
-      legal,
-      validate,
-      errMsg
+      name,
+      validate
     } = this.state;
 
     let $imagePreview = null;
@@ -207,9 +222,11 @@ class Attorney extends Component {
             <i className="fa fa-bars"></i>
           </a>
 
-          <span className="mb-4 title">Welcome Tender Bond Portal Admin</span>
+          <div className="mb-2 container">
+            <span className="mb-4 title">Welcome Tender Bond Portal Admin</span>
+          </div>
 
-          <div className="panel">
+          <div className="panel container">
             <FormGroup row className="mx-1 search-container">
               <div className="d-flex">
                 <i className="fa fa-search"></i>
@@ -235,6 +252,7 @@ class Attorney extends Component {
               />
             </div>
           </div>
+          <NotificationContainer />
         </div>
 
         <Modal
@@ -246,15 +264,10 @@ class Attorney extends Component {
             Add Attorney
           </ModalHeader>
           <ModalBody>
-            {
-              errMsg != '' && (
-                <h4 className="text-danger text-center">{errMsg}</h4>
-              )
-            }
             <Label>Name</Label>
             <Input
               type="text"
-              onChange={(val) => this.setState({legal: val.target.value})}
+              onChange={(val) => this.setState({name: val.target.value})}
             />
             {
               validate ? (
@@ -287,7 +300,7 @@ class Attorney extends Component {
             </Button>
             <Button
               color="primary"
-              disabled={email == '' || legal == ''}
+              disabled={email == '' || name == ''}
               onClick={this.addAttorney.bind(this)}
             >
               Save
@@ -307,7 +320,7 @@ class Attorney extends Component {
             <hr />
             <Row>
               <Col sm="2"><Label>Name</Label></Col>
-              <Col sm="10"><Label>{viewItem.legal}</Label></Col>
+              <Col sm="10"><Label>{viewItem.name}</Label></Col>
             </Row>
             <hr />
             <Row>
@@ -327,7 +340,7 @@ class Attorney extends Component {
           <ModalFooter>
             <Button
               color="primary"
-              disabled={editItem.legal == ''}
+              disabled={editItem.name == ''}
               onClick={() => {this.setState({view: false})}}
             >
               OK
@@ -348,10 +361,10 @@ class Attorney extends Component {
               <Label>Name</Label>
               <Input
                 type="text"
-                value={editItem.legal}
+                value={editItem.name}
                 onChange={(val) => {
                   let { editItem } = this.state;
-                  editItem.legal = val.target.value;
+                  editItem.name = val.target.value;
 
                   this.setState({
                     editItem
@@ -406,7 +419,7 @@ class Attorney extends Component {
             </Button>
             <Button
               color="primary"
-              disabled={editItem.legal == ''}
+              disabled={editItem.name == ''}
               onClick={this.updateAttorney.bind(this)}
             >
               Save

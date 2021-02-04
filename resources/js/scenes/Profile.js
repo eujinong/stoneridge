@@ -53,13 +53,15 @@ class Profile extends Component {
             <i className="fa fa-bars"></i>
           </a>
 
-          <span className="mb-4 title">
-            Hi {user && user.legal}! Welcome Tender Bond
-          </span>
+          <div className="mb-2 container">
+            <span className="title">
+              Hi {user && user.legal}! Welcome Tender Bond
+            </span>
+          </div>
           
           {
             user && (
-              <div className="panel">
+              <div className="panel container">
                 <div className="table-responsive">
                   {
                     user.user_type == 'N' && (

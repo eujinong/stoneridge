@@ -4,6 +4,8 @@ import {
   Modal, ModalHeader, ModalBody, ModalFooter,
   FormGroup, Label, Input, Button, CustomInput
 } from 'reactstrap';
+import Select from 'react-select';
+import { NotificationContainer, NotificationManager } from 'react-notifications';
 
 import Api from '../../apis/app';
 
@@ -18,6 +20,7 @@ class Client extends Component {
 
     this.state = {
       showMenu: false,
+      attorneys: [],
       clients: [],
       filtered: [],
       filter: '',
@@ -28,6 +31,7 @@ class Client extends Component {
       user_type: 'N',
       email: '',
       legal: '',
+      attorney: '',
       validate: true,
       errMsg: ''
     }
@@ -74,6 +78,45 @@ class Client extends Component {
       default:
         break;
     }
+
+    this.getAttorneys();
+  }
+
+  async getAttorneys() {
+    const data = await Api.get('attorneys');
+    const { response, body } = data;
+    switch (response.status) {
+      case 200:
+        let attorneys = [];
+        let result = body.attorneys.filter(item => item.active == 1);
+
+        for (let i = 0; i < result.length; i++) {
+          attorneys.push({
+            value: result[i].id,
+            label: result[i].name
+          })
+        }
+
+        this.setState({
+          attorneys
+        });
+        break;
+      default:
+        break;
+    }
+  }
+
+  setNotifications(type, message) {
+    switch (type) {
+      case 'success':
+        NotificationManager.success(message, '', 3000);
+        break;
+      case 'error':
+        NotificationManager.error(message, '', 5000);
+        break;
+      default:
+        break;
+    }
   }
 
   handleFilter(str) {
@@ -91,7 +134,13 @@ class Client extends Component {
   }
 
   async addClient() {
-    const { user, user_type, email, legal } = this.state;
+    const {
+      user,
+      user_type,
+      email,
+      legal,
+      attorney
+    } = this.state;
 
     const re = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
     const validate = re.test(String(email).toLowerCase());
@@ -104,8 +153,8 @@ class Client extends Component {
       const params = {
         email,
         legal,
-        signature: null,
-        user_type
+        user_type,
+        attorney: user_type == 'N' ? attorney.value : ''
       }
 
       const data = await Api.post('add-user', params);
@@ -136,11 +185,15 @@ class Client extends Component {
             filtered: clients,
             showModal: false
           });
+
+          if (user_type == 'N') {
+            this.setNotifications('success', 'New client is added successfully.');
+          } else {
+            this.setNotifications('success', 'New admin is added successfully.');
+          }
           break;
         case 406:
-          this.setState({
-            errMsg: body.message
-          });
+          this.setNotifications('error', body.message);
           break;
         default:
           break;
@@ -165,7 +218,6 @@ class Client extends Component {
     const params = {
       email: editItem.email,
       legal: editItem.legal,
-      signature: null,
       active: editItem.active
     }
 
@@ -190,7 +242,15 @@ class Client extends Component {
             filtered: clients,
             editable: false
           });
+
+          if (editItem.user_type == 'N') {
+            this.setNotifications('success', 'The client is updated successfully.');
+          } else {
+            this.setNotifications('success', 'The admin is updated successfully.');
+          }
           break;
+        case 406:
+          this.setNotifications('error', body.message);
         default:
           break;
       }
@@ -199,6 +259,7 @@ class Client extends Component {
   render() {
     const {
       showMenu,
+      attorneys,
       filtered,
       filter,
       user,
@@ -224,17 +285,19 @@ class Client extends Component {
             <i className="fa fa-bars"></i>
           </a>
 
-          <span className="mb-4 title">
-            {
-              (user && user.user_type == 'M') ? (
-                'Hi ' + user.legal + '! Welcome Tender Bond'
-              ) : (
-                'Welcome Tender Bond Portal Admin'
-              )
-            }
-          </span>
+          <div className="mb-2 container">
+            <span className="mb-4 title">
+              {
+                (user && user.user_type == 'M') ? (
+                  'Hi ' + user.legal + '! Welcome Tender Bond'
+                ) : (
+                  'Welcome Tender Bond Portal Admin'
+                )
+              }
+            </span>
+          </div>
 
-          <div className="panel">
+          <div className="panel container">
             <FormGroup row className="mx-1 search-container">
               <div>
                 <i className="fa fa-search"></i>
@@ -260,6 +323,7 @@ class Client extends Component {
               />
             </div>
           </div>
+          <NotificationContainer />
         </div>
 
         <Modal
@@ -321,6 +385,19 @@ class Client extends Component {
               type="text"
               onChange={(val) => this.setState({legal: val.target.value})}
             />
+            {
+              user_type == 'N' && (
+                <div style={{marginTop: 20}}>
+                  <Select
+                    isSearchable={true}
+                    isMulti={false}
+                    placeholder="Choose the attorney"
+                    options={attorneys}
+                    onChange={(value) => this.setState({attorney: value})}
+                  />
+                </div>
+              )
+            }
           </ModalBody>
           <ModalFooter>
             <Button
@@ -385,6 +462,14 @@ class Client extends Component {
                 }}
               />
             </FormGroup>
+            {
+              editItem.user_type == 'N' && (
+                <FormGroup>
+                  <Label>Attorney</Label>
+                  <Input type="text" value={editItem.name} disabled />
+                </FormGroup>
+              )
+            }
             <FormGroup>
               <CustomInput
                 type="switch"

@@ -70,11 +70,13 @@ class MyClient extends Component {
             <i className="fa fa-bars"></i>
           </a>
 
-          <span className="mb-4 title">
-            Hi {user && user.legal}! Welcome Tender Bond
-          </span>
+          <div className="mb-2 container">
+            <span className="mb-4 title">
+              Hi {user && user.legal}! Welcome Tender Bond
+            </span>
+          </div>
 
-          <div className="panel">
+          <div className="panel container">
             <FormGroup row className="mx-1 search-container">
               <div>
                 <i className="fa fa-search"></i>
