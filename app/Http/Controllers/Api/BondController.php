@@ -42,6 +42,10 @@ class BondController extends Controller
   {
     $data = $request->all();
 
+    $mode = $data['mode'];
+
+    unset($data['mode']);
+
     $bond_no = '37-4458-';
 
     $id = '';
@@ -95,6 +99,10 @@ class BondController extends Controller
     $pdf = PDF::loadView('pdf',array('data' => $data));
     $pdf->save('files/' . $bond_no . '.pdf');
 
+    if ($mode == 'send') {
+      $this->sendBond($bond_no);
+    }
+
     return response()->json([
       'status' => 'success',
       'message' => 'Your Bond Request processed successfully!',
@@ -105,6 +113,10 @@ class BondController extends Controller
   public function update($id, Request $request)
   {
     $data = $request->all();
+
+    $mode = $data['mode'];
+
+    unset($data['mode']);
 
     foreach ($data as $key => $value) {
       if (is_null($value)) {
@@ -121,6 +133,10 @@ class BondController extends Controller
 
     $pdf = PDF::loadView('pdf',array('data' => $data));
     $pdf->save('files/' . $data['bond_no'] . '.pdf');
+
+    if ($mode == 'send') {
+      $this->sendBond($data['bond_no']);
+    }
 
     return response()->json([
       'status' => 'success',
@@ -146,12 +162,21 @@ class BondController extends Controller
 		], 200);
   }
 
-  public function send($id)
+  public function send($bond_no)
+  {
+    $this->sendBond($bond_no);
+
+    return response()->json([
+			'status' => 'success'
+		], 200);
+  }
+
+  public function sendBond($bond_no)
   {
     $bond = Bond::leftJoin('users', 'users.id', '=', 'bonds.client_id')
                 ->leftJoin('clients', 'clients.user_id', '=', 'bonds.client_id')
                 ->leftJoin('users AS att', 'att.id', '=', 'clients.attorney')
-                ->where('bonds.id', $id)
+                ->where('bonds.bond_no', $bond_no)
                 ->select('bonds.bond_no', 'users.email AS from', 'att.email AS to')
                 ->first();
 
@@ -163,10 +188,6 @@ class BondController extends Controller
 
 		$headers = "From: admin@stoneridge.com";
 
-    mail($data['to'], "Welcome to StoneRidge", $message, $headers);
-    
-    return response()->json([
-			'status' => 'success'
-		], 200);
+    mail($bond['to'], "Welcome to StoneRidge", $message, $headers);
   }
 }

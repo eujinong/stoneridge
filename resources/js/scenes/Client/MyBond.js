@@ -102,8 +102,8 @@ class MyBond extends Component {
     this.props.history.push('my-bonds/detail', id);
   }
 
-  async handleSend(id) {
-    const data = await Api.get(`send-bond/${id}`);
+  async handleSend(bond_no) {
+    const data = await Api.get(`send-bond/${bond_no}`);
     const { response } = data;
     switch (response.status) {
       case 200:

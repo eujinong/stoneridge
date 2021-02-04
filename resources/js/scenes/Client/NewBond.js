@@ -155,6 +155,7 @@ class NewBond extends Component {
     } = this.state;
     
     const params = {
+      mode,
       client_id: user.id,
       bid_bond: bid_bond ? 1 : 0,
       agree_bond: agree_bond ? 1 : 0,
@@ -578,7 +579,10 @@ class NewBond extends Component {
                   >
                     <i className="fa fa-print mr-2"></i> Print
                   </Button>
-                  <Button className="btn btn-info px-4">
+                  <Button
+                    className="btn btn-info px-4"
+                    onClick={this.handleSave.bind(this, 'send')}
+                  >
                     <i className="fa fa-envelope mr-2"></i> Send
                   </Button>
                 </Col>

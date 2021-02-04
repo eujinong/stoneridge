@@ -195,7 +195,7 @@ class BondTable extends Component {
                     </a>
                     <a
                       className="mx-2"
-                      onClick={() => onSend(item.id)}
+                      onClick={() => onSend(item.bond_no)}
                     >
                       <i className="fa fa-envelope"></i>
                     </a>
