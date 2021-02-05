@@ -11,7 +11,6 @@ use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\URL;
 
 use PDF;
-use Log;
 
 class BondController extends Controller
 {
@@ -19,6 +18,7 @@ class BondController extends Controller
   {
     $bonds = Bond::leftJoin('clients', 'clients.user_id', '=', 'bonds.client_id')
                 ->select('bonds.*', 'clients.attorney', 'clients.legal')
+                ->orderBy('id', 'DESC')
                 ->get();
 
     return response()->json([
@@ -96,6 +96,10 @@ class BondController extends Controller
     $client = Client::where('user_id', $data['client_id'])->first();
     $data['legal'] = $client->legal;
 
+    $attorney = Attorney::where('user_id', $client->attorney)->first();
+    $data['signature'] = $attorney->signature;
+    $data['name'] = $attorney->name;
+
     Storage::disk('local')->delete($bond_no . '.pdf');
 
     $pdf = PDF::loadView('pdf',array('data' => $data));
@@ -131,6 +135,10 @@ class BondController extends Controller
     $client = Client::where('user_id', $data['client_id'])->first();
     $data['legal'] = $client->legal;
 
+    $attorney = Attorney::where('user_id', $client->attorney)->first();
+    $data['signature'] = $attorney->signature;
+    $data['name'] = $attorney->name;
+
     Storage::disk('local')->delete($data['bond_no'] . '.pdf');
 
     $pdf = PDF::loadView('pdf',array('data' => $data));
@@ -156,6 +164,7 @@ class BondController extends Controller
 
     $bonds = Bond::leftJoin('clients', 'clients.id', '=', 'bonds.client_id')
                 ->select('bonds.*', 'clients.legal')
+                ->orderBy('id', 'DESC')
                 ->get();
 
     return response()->json([
@@ -212,8 +221,7 @@ class BondController extends Controller
 
     $attorney = Attorney::where('user_id', $client->attorney)->first();
     $data['signature'] = $attorney->signature;
-
-    Log::info($data);
+    $data['name'] = $attorney->name;
 
     Storage::disk('local')->delete($bond_no . '.pdf');
 

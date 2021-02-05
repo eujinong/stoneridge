@@ -206,7 +206,7 @@ class MyBond extends Component {
           size="lg"
         >
           <ModalHeader toggle={() => {this.setState({showBond: false})}}>
-            Tender Bond Request Form
+            Tender Bond Request Form: {bond.bond_no}
           </ModalHeader>
           <ModalBody>
             <Row>

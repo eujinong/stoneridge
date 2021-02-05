@@ -147,7 +147,9 @@ class EditBond extends Component {
 
     this.setState({
       start: date,
-      start_date
+      start_date,
+      end: date,
+      end_date: start_date
     });
   }
 
@@ -197,7 +199,7 @@ class EditBond extends Component {
       client_id,
       bid_bond: bid_bond ? 1 : 0,
       agree_bond: agree_bond ? 1 : 0,
-      type: bid_bond ? 'B' : 'A',
+      type: agree_bond && bid_bond ? 'S' : (bid_bond ? 'B' : 'A'),
       close_date, close_time,
       obligee, description,
       contract_no, contract_price,
@@ -567,6 +569,7 @@ class EditBond extends Component {
                   <FormGroup>
                     <Label for="end_date">Project End Date:</Label>
                     <DatePicker
+                      minDate={start}
                       selected={end}
                       onChange={(date) => this.handleEndDate(date)}
                     />
