@@ -1,8 +1,7 @@
 import React, { Component } from 'react';
 import { withRouter } from 'react-router-dom';
 import {
-  Modal, ModalHeader, ModalBody, ModalFooter,
-  FormGroup, Label, Input, Button, CustomInput
+  FormGroup, Input
 } from 'reactstrap';
 
 import Api from '../../apis/app';
@@ -34,6 +33,32 @@ class MyClient extends Component {
     this.setState({
       user
     });
+
+    const data = await Api.get('clients');
+    const { response, body } = data;
+    switch (response.status) {
+      case 200:
+        let clients = body.clients.filter(client => client.attorney == user.id);
+
+        for (let i = 0; i < clients.length; i++) {
+          let id = '' + clients[i].id;
+          
+          let str = '';
+          for (let j = 0; j < 5 - id.length; j++) {
+            str += '0';
+          }
+
+          clients[i].id = str + id;
+        }
+
+        this.setState({
+          clients,
+          filtered: clients
+        });
+        break;
+      default:
+        break;
+    }
   }
 
   handleFilter(str) {

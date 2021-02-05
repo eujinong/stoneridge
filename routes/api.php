@@ -33,5 +33,6 @@ Route::namespace('Api')->group(function () {
         Route::put('bond/{id}', 'BondController@update');
         Route::delete('bond/{id}', 'BondController@destroy');
         Route::get('send-bond/{id}', 'BondController@send');
+        Route::get('approve-bond/{id}', 'BondController@approve');
     });
 });

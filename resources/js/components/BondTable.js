@@ -2,7 +2,7 @@
 /* eslint-disable jsx-a11y/alt-text */
 /* eslint-disable jsx-a11y/anchor-is-valid */
 
-import React, { Component } from 'react';
+import React, { Component, Fragment } from 'react';
 import {
   Table,
   Pagination,
@@ -113,8 +113,10 @@ class BondTable extends Component {
 
   render() {
     const {
+      attorney,
       onView,
       onPrint,
+      onApprove,
       onEdit,
       onSend,
       onDelete,
@@ -187,24 +189,37 @@ class BondTable extends Component {
                     >
                       <i className="fa fa-print"></i>
                     </a>
-                    <a
-                      className="mx-2"
-                      onClick={() => onEdit(item.id)}
-                    >
-                      <i className="fa fa-pencil"></i>
-                    </a>
-                    <a
-                      className="mx-2"
-                      onClick={() => onSend(item.bond_no)}
-                    >
-                      <i className="fa fa-envelope"></i>
-                    </a>
-                    <a
-                      className="mx-2"
-                      onClick={() => onDelete(item.id)}
-                    >
-                      <i className="fa fa-trash"></i>
-                    </a>
+                    {
+                      attorney ? (
+                        <a
+                          className="mx-2"
+                          onClick={() => onApprove(item.id)}
+                        >
+                          <i className="fa fa-check"></i>
+                        </a>
+                      ) : (
+                        <Fragment>
+                          <a
+                            className="mx-2"
+                            onClick={() => onEdit(item.id)}
+                          >
+                            <i className="fa fa-pencil"></i>
+                          </a>
+                          <a
+                            className="mx-2"
+                            onClick={() => onSend(item.bond_no)}
+                          >
+                            <i className="fa fa-envelope"></i>
+                          </a>
+                          <a
+                            className="mx-2"
+                            onClick={() => onDelete(item.id)}
+                          >
+                            <i className="fa fa-trash"></i>
+                          </a>
+                        </Fragment>
+                      )
+                    }
                   </Table.Cell>
                 </Table.Row>
               ))
@@ -258,6 +273,7 @@ class BondTable extends Component {
 BondTable.defaultProps = {
   onView: () => {},
   onPrint: () => {},
+  onApprove: () => {},
   onEdit: () => {},
   onSend: () => {},
   onDelete: () => {}

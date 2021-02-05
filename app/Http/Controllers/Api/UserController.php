@@ -390,7 +390,7 @@ class UserController extends Controller
 						->leftJoin('attorneys', 'attorneys.user_id', '=', 'clients.attorney')
 						->where('users.user_type', 'M')
 						->orWhere('users.user_type', 'N')
-						->select('users.*', 'clients.legal', 'attorneys.name')
+						->select('users.*', 'clients.legal', 'clients.attorney', 'attorneys.name')
 						->orderBy('users.id', 'DESC')
 						->get();
 

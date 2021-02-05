@@ -2,6 +2,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\User;
+use App\Attorney;
 use App\Client;
 use App\Bond;
 
@@ -10,13 +11,14 @@ use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\URL;
 
 use PDF;
+use Log;
 
 class BondController extends Controller
 {
   public function index()
   {
-    $bonds = Bond::leftJoin('clients', 'clients.id', '=', 'bonds.client_id')
-                ->select('bonds.*', 'clients.legal')
+    $bonds = Bond::leftJoin('clients', 'clients.user_id', '=', 'bonds.client_id')
+                ->select('bonds.*', 'clients.attorney', 'clients.legal')
                 ->get();
 
     return response()->json([
@@ -194,5 +196,32 @@ class BondController extends Controller
         ->update(array(
           'status' => 'sent'
         ));
+  }
+
+  public function approve($id)
+  {
+    Bond::where('id', $id)
+        ->update(array(
+          'status' => 'approved'
+        ));
+
+    $data = Bond::find($id);
+
+    $client = Client::where('user_id', $data['client_id'])->first();
+    $data['legal'] = $client->legal;
+
+    $attorney = Attorney::where('user_id', $client->attorney)->first();
+    $data['signature'] = $attorney->signature;
+
+    Log::info($data);
+
+    Storage::disk('local')->delete($bond_no . '.pdf');
+
+    $pdf = PDF::loadView('pdf',array('data' => $data));
+    $pdf->save('files/' . $bond_no . '.pdf');
+
+    return response()->json([
+			'status' => 'success'
+		], 200);
   }
 }

@@ -113,6 +113,11 @@ class SideBar extends Component {
                   </NavLink>
                 </NavItem>
                 <NavItem>
+                  <NavLink tag={Link} to="/my-actions">
+                    <i className="mr-2 fa fa-list"></i> Approve Request
+                  </NavLink>
+                </NavItem>
+                <NavItem>
                   <NavLink tag={Link} to="/my-clients">
                     <i className="mr-2 fa fa-users"></i> My Clients
                   </NavLink>
