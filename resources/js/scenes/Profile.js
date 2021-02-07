@@ -101,7 +101,7 @@ class Profile extends Component {
                             <Table.Cell className="text-center">{user.email}</Table.Cell>
                           </Table.Row>
                           <Table.Row>
-                            <Table.Cell className="text-center">Agreement Bond</Table.Cell>
+                            <Table.Cell className="text-center">Agreement to Bond</Table.Cell>
                             <Table.Cell className="text-center">{agree}</Table.Cell>
                           </Table.Row>
                           <Table.Row>
@@ -109,7 +109,7 @@ class Profile extends Component {
                             <Table.Cell className="text-center">{bid}</Table.Cell>
                           </Table.Row>
                           <Table.Row>
-                            <Table.Cell className="text-center">Both of Bond</Table.Cell>
+                            <Table.Cell className="text-center">Both</Table.Cell>
                             <Table.Cell className="text-center">{both}</Table.Cell>
                           </Table.Row>
                           <Table.Row>
