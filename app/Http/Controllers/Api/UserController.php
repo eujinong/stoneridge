@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api;
 use App\User;
 use App\Attorney;
 use App\Client;
+use App\Bond;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;

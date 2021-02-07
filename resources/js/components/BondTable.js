@@ -172,9 +172,11 @@ class BondTable extends Component {
                   key={index}
                 >
                   <Table.Cell className="text-center">{item.bond_no}</Table.Cell>
-                  <Table.Cell className="text-center">{item.type}</Table.Cell>
                   <Table.Cell className="text-center">
-                    {item.created_at.substring(0, 16)}
+                    {item.type == 'S' ? 'A / B' : item.type}
+                  </Table.Cell>
+                  <Table.Cell className="text-center">
+                    {item.created_at.substring(0, 10) + ' ' + item.created_at.substring(11, 16)}
                   </Table.Cell>
                   <Table.Cell className="text-center">
                     <a

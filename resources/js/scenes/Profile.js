@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
 import { withRouter } from 'react-router-dom';
-import { Row, Col, Label } from 'reactstrap';
 import { Table } from 'semantic-ui-react';
+
+import Api from '../apis/app';
 
 import SideBar from '../components/SideBar';
 
@@ -13,13 +14,32 @@ class Profile extends Component {
 
     this.state = {
       showMenu: false,
+      agree: 0,
+      bid: 0,
+      both: 0,
       user: null
     }
   }
 
-  componentDidMount() {
+  async componentDidMount() {
     const auth = JSON.parse(localStorage.getItem('auth'));
     const user = auth.user;
+
+    const data = await Api.get('bonds');
+    const { response, body } = data;
+    switch (response.status) {
+      case 200:
+        const bonds = body.bonds.filter(item => item.client_id == user.id);
+        
+        this.setState({
+          agree: bonds.filter(item => item.type == 'A').length,
+          bid: bonds.filter(item => item.type == 'B').length,
+          both: bonds.filter(item => item.type == 'S').length
+        });
+        break;
+      default:
+        break;
+    }
 
     let id = '' + user.id;
           
@@ -38,6 +58,7 @@ class Profile extends Component {
   render() {
     const {
       showMenu,
+      agree, bid, both,
       user
     } = this.state;
 
@@ -80,12 +101,16 @@ class Profile extends Component {
                             <Table.Cell className="text-center">{user.email}</Table.Cell>
                           </Table.Row>
                           <Table.Row>
-                            <Table.Cell className="text-center">Bid Bond</Table.Cell>
-                            <Table.Cell className="text-center">0</Table.Cell>
+                            <Table.Cell className="text-center">Agreement Bond</Table.Cell>
+                            <Table.Cell className="text-center">{agree}</Table.Cell>
                           </Table.Row>
                           <Table.Row>
-                            <Table.Cell className="text-center">Agreement Bond</Table.Cell>
-                            <Table.Cell className="text-center">0</Table.Cell>
+                            <Table.Cell className="text-center">Bid Bond</Table.Cell>
+                            <Table.Cell className="text-center">{bid}</Table.Cell>
+                          </Table.Row>
+                          <Table.Row>
+                            <Table.Cell className="text-center">Both of Bond</Table.Cell>
+                            <Table.Cell className="text-center">{both}</Table.Cell>
                           </Table.Row>
                           <Table.Row>
                             <Table.Cell className="text-center">Profile Status</Table.Cell>
