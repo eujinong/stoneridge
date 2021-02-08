@@ -21,6 +21,7 @@ class Client extends Component {
     this.state = {
       showMenu: false,
       attorneys: [],
+      producers: [],
       clients: [],
       filtered: [],
       filter: '',
@@ -32,6 +33,7 @@ class Client extends Component {
       email: '',
       legal: '',
       attorney: '',
+      producer: '',
       validate: true,
       errMsg: ''
     }
@@ -70,7 +72,20 @@ class Client extends Component {
           clients[i].id = str + id;
         }
 
+        let producers = [];
+        let result = body.clients.filter(
+          client => client.user_type == 'N' && client.active == 1
+        );
+
+        for (let i = 0; i < result.length; i++) {
+          producers.push({
+            value: result[i].id,
+            label: result[i].legal
+          });
+        }
+
         this.setState({
+          producers,
           clients,
           filtered: clients
         });
@@ -139,7 +154,8 @@ class Client extends Component {
       user_type,
       email,
       legal,
-      attorney
+      attorney,
+      producer
     } = this.state;
 
     const re = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
@@ -154,7 +170,8 @@ class Client extends Component {
         email,
         legal,
         user_type,
-        attorney: user_type == 'N' ? attorney.value : ''
+        attorney: user_type == 'N' ? attorney.value : '',
+        producer: user_type == 'N' && producer ? producer.value : ''
       }
 
       const data = await Api.post('add-user', params);
@@ -180,7 +197,20 @@ class Client extends Component {
             clients[i].id = str + id;
           }
 
+          let producers = [];
+          let result = body.clients.filter(
+            client => client.user_type == 'N' && client.active == 1
+          );
+
+          for (let i = 0; i < result.length; i++) {
+            producers.push({
+              value: result[i].id,
+              label: result[i].legal
+            });
+          }
+
           this.setState({
+            producers,
             clients,
             filtered: clients,
             showModal: false
@@ -225,8 +255,17 @@ class Client extends Component {
       const { response, body } = data;
       switch (response.status) {
         case 200:
+          let producers = [];
+          
           const clients = body.clients;
           for (let i = 0; i < clients.length; i++) {
+            if (clients[i].user_type == 'N' && clients[i].active == 1) {
+              producers.push({
+                value: clients[i].id,
+                label: clients[i].legal
+              });
+            }
+
             let id = '' + clients[i].id;
             
             let str = '';
@@ -238,6 +277,7 @@ class Client extends Component {
           }
 
           this.setState({
+            producers,
             clients,
             filtered: clients,
             editable: false
@@ -260,6 +300,7 @@ class Client extends Component {
     const {
       showMenu,
       attorneys,
+      producers,
       filtered,
       filter,
       user,
@@ -399,6 +440,19 @@ class Client extends Component {
                 </div>
               )
             }
+            {
+              user_type == 'N' && (
+                <div style={{marginTop: 20}}>
+                  <Select
+                    isSearchable={true}
+                    isMulti={false}
+                    placeholder="Choose the producer"
+                    options={producers}
+                    onChange={(value) => this.setState({producer: value})}
+                  />
+                </div>
+              )
+            }
           </ModalBody>
           <ModalFooter>
             <Button
@@ -471,6 +525,18 @@ class Client extends Component {
                 <FormGroup>
                   <Label>Attorney</Label>
                   <Input type="text" value={editItem.name} disabled />
+                </FormGroup>
+              )
+            }
+            {
+              editItem.user_type == 'N' && (
+                <FormGroup>
+                  <Label>Attorney</Label>
+                  <Input
+                    type="text"
+                    value={editItem.producer === null ? 'Not set' : editItem.producer}
+                    disabled
+                  />
                 </FormGroup>
               )
             }

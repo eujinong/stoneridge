@@ -18,6 +18,7 @@ class CreateClientsTable extends Migration
             $table->bigInteger('user_id');
             $table->string('legal');
             $table->bigInteger('attorney')->nullable();
+            $table->bigInteger('producer')->nullable();
             $table->timestamps();
         });
 
@@ -26,6 +27,7 @@ class CreateClientsTable extends Migration
                 'user_id' => 1,
                 'legal' => 'SuperAdmin',
                 'attorney' => null,
+                'producer' => null,
                 'created_at' => date('Y-m-d H:i:s'),
                 'updated_at' => date('Y-m-d H:i:s')
             )

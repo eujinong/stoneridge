@@ -264,14 +264,17 @@ class UserController extends Controller
 			Client::create(array(
 				'user_id' => $user->id,
 				'legal' => $data['legal'],
-				'attorney' => $data['attorney']
+				'attorney' => $data['attorney'],
+				'producer' => $data['producer'],
 			));
 
 			$clients = Client::leftJoin('users', 'users.id', '=', 'clients.user_id')
 							->leftJoin('attorneys', 'attorneys.user_id', '=', 'clients.attorney')
+							->leftJoin('clients AS producers', 'producers.user_id', '=', 'clients.producer')
 							->where('users.user_type', 'M')
 							->orWhere('users.user_type', 'N')
-							->select('users.*', 'clients.legal', 'attorneys.name')
+							->select('users.*', 'clients.legal', 'clients.attorney',
+											'producers.legal AS producer', 'attorneys.name')
 							->orderBy('users.id', 'DESC')
 							->get();
 
@@ -372,9 +375,11 @@ class UserController extends Controller
 
 			$clients = Client::leftJoin('users', 'users.id', '=', 'clients.user_id')
 						->leftJoin('attorneys', 'attorneys.user_id', '=', 'clients.attorney')
+						->leftJoin('clients AS producers', 'producers.user_id', '=', 'clients.producer')
 						->where('users.user_type', 'M')
 						->orWhere('users.user_type', 'N')
-						->select('users.*', 'clients.legal', 'attorneys.name')
+						->select('users.*', 'clients.legal', 'clients.attorney',
+										 'producers.legal AS producer', 'attorneys.name')
 						->orderBy('users.id', 'DESC')
 						->get();
 
@@ -389,9 +394,11 @@ class UserController extends Controller
 	{
 		$clients = Client::leftJoin('users', 'users.id', '=', 'clients.user_id')
 						->leftJoin('attorneys', 'attorneys.user_id', '=', 'clients.attorney')
+						->leftJoin('clients AS producers', 'producers.user_id', '=', 'clients.producer')
 						->where('users.user_type', 'M')
 						->orWhere('users.user_type', 'N')
-						->select('users.*', 'clients.legal', 'clients.attorney', 'attorneys.name')
+						->select('users.*', 'clients.legal', 'clients.attorney',
+										 'producers.legal AS producer', 'attorneys.name')
 						->orderBy('users.id', 'DESC')
 						->get();
 
