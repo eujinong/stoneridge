@@ -59,10 +59,10 @@ class UserController extends Controller
 
 		$user = User::where('email', $request->email)->first();
 
-		if ($user->user_type == 'A') {
+		if ($user->user_type == 'S' || $user->user_type == 'A') {
 			$attorney = Attorney::where('user_id', $user->id)->first();
 			$user->legal = $attorney->name;
-		} else if ($user->user_type != 'S') {
+		} else {
 			$client = Client::where('user_id', $user->id)->first();
 			$user->legal = $client->legal;
 		}
@@ -380,7 +380,7 @@ class UserController extends Controller
 			}
 		}
 
-		if ($user->user_type == 'S') {
+		if ($user->user_type == 'S' || $user->user_type == 'A') {
 			Attorney::where('user_id', $user->id)
 						->update(array(
 							'name' => $data['name'],
@@ -393,17 +393,6 @@ class UserController extends Controller
 									->orderBy('users.id', 'DESC')
 									->get();
 
-			return response()->json([
-				'status' => 'success',
-				'admins' => $admins
-			], 200);
-		} else if ($user->user_type == 'A') {
-			Attorney::where('user_id', $user->id)
-						->update(array(
-							'name' => $data['name'],
-							'signature' => $data['signature']
-						));
-
 			$attorneys = Attorney::leftJoin('users', 'users.id', '=', 'attorneys.user_id')
 						->select('users.*', 'attorneys.name', 'attorneys.signature')
 						->orderBy('id', 'DESC')
@@ -411,6 +400,7 @@ class UserController extends Controller
 
 			return response()->json([
 				'status' => 'success',
+				'admins' => $admins,
 				'attorneys' => $attorneys
 			], 200);
 		} else {

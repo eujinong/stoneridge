@@ -41,11 +41,9 @@ class Login extends Component {
   async login(auth) {
     await this.props.login(auth);
 
-    if (auth.user.user_type == 'S' || auth.user.user_type == 'M') {
+    if (auth.user.user_type == 'M') {
       this.props.history.push('/clients');
-    }
-
-    if (auth.user.user_type == 'N' || auth.user.user_type == 'A') {
+    } else {
       this.props.history.push('/profile');
     }
   }

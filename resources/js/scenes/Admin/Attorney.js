@@ -163,6 +163,7 @@ class Attorney extends Component {
     const { editItem, imagePreviewUrl } = this.state;
 
     const params = {
+      user_type: editItem.user_type,
       email: editItem.email,
       name: editItem.name,
       signature: imagePreviewUrl,
@@ -170,23 +171,23 @@ class Attorney extends Component {
     }
 
     const data = await Api.put('update-user', params);
-      const { response, body } = data;
-      switch (response.status) {
-        case 200:
-          this.setState({
-            attorneys: body.attorneys,
-            filtered: body.attorneys,
-            imagePreviewUrl: '',
-            editable: false
-          });
-          this.setNotifications('success', 'The attorney is updated successfully.');
-          break;
-        case 406:
-          this.setNotifications('error', body.message);
-          break;
-        default:
-          break;
-      }
+    const { response, body } = data;
+    switch (response.status) {
+      case 200:
+        this.setState({
+          attorneys: body.attorneys,
+          filtered: body.attorneys,
+          imagePreviewUrl: '',
+          editable: false
+        });
+        this.setNotifications('success', 'The attorney is updated successfully.');
+        break;
+      case 406:
+        this.setNotifications('error', body.message);
+        break;
+      default:
+        break;
+    }
   }
 
   render() {
