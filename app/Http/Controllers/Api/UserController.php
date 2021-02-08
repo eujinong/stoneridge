@@ -295,13 +295,23 @@ class UserController extends Controller
 	{
 		$data = $request->all();
 
+		$user = User::where('email', $data['email'])->first();
+
+		if ($user->user_type == 'N' && $data['user_type'] == 'M') {
+			$bonds = Bond::where('client_id', $user->id)->get();
+
+			foreach ($bonds as $bond) {
+				Storage::disk('local')->delete($bond->bond_no . '.pdf');
+			}
+
+			Bond::where('client_id', $user->id)->delete();
+		}
+
 		User::where('email', $data['email'])
 				->update(array(
 					'user_type' => $data['user_type'],
 					'active' => $data['active']
 				));
-
-		$user = User::where('email', $data['email'])->first();
 
 		if ($user->user_type == 'S') {
 			$admins = User::where('user_type', 'S')->orderBy('id', 'DESC')->get();

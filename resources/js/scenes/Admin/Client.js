@@ -35,6 +35,7 @@ class Client extends Component {
       attorney: '',
       producer: '',
       validate: true,
+      warning: false,
       errMsg: ''
     }
 
@@ -315,6 +316,7 @@ class Client extends Component {
       legal,
       attorney,
       validate,
+      warning,
       errMsg
     } = this.state;
 
@@ -495,11 +497,8 @@ class Client extends Component {
                       type="radio"
                       checked={editItem.user_type == 'M'}
                       onChange={() => {
-                        let { editItem } = this.state;
-                        editItem.user_type = 'M';
-      
                         this.setState({
-                          editItem
+                          warning: true
                         });
                       }}
                     />
@@ -628,6 +627,47 @@ class Client extends Component {
               onClick={this.updateClient.bind(this)}
             >
               Save
+            </Button>
+          </ModalFooter>
+        </Modal>
+
+        <Modal
+          isOpen={warning}
+          centered={true}
+          size="md"
+        >
+          <ModalHeader
+            style={{backgroundColor: '#e3342f'}}
+            toggle={() => {this.setState({warning: false})}}
+          >
+            Warning
+          </ModalHeader>
+          <ModalBody>
+            <h4>All bonds and settings for this client will be lost.</h4>
+            <h3 className="mt-5 text-center">
+              Are you agree?
+            </h3>
+          </ModalBody>
+          <ModalFooter>
+            <Button
+              color="default"
+              onClick={() => {this.setState({warning: false})}}
+            >
+              No
+            </Button>
+            <Button
+              color="danger"
+              onClick={() => {
+                let { editItem } = this.state;
+                editItem.user_type = 'M';
+
+                this.setState({
+                  editItem,
+                  warning: false
+                });
+              }}
+            >
+              Yes
             </Button>
           </ModalFooter>
         </Modal>
