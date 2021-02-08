@@ -62,7 +62,7 @@ class UserController extends Controller
 		if ($user->user_type == 'A') {
 			$attorney = Attorney::where('user_id', $user->id)->first();
 			$user->legal = $attorney->name;
-		} else {
+		} else if ($user->user_type != 'S') {
 			$client = Client::where('user_id', $user->id)->first();
 			$user->legal = $client->legal;
 		}
@@ -244,7 +244,14 @@ class UserController extends Controller
 			'active' => 0
 		));
 
-		if ($data['user_type'] == 'A') {
+		if ($data['user_type'] == 'S') {
+			$admins = User::where('user_type', 'S')->orderBy('id', 'DESC')->get();
+
+			return response()->json([
+				'status' => 'success',
+				'admins' => $admins
+			], 200);
+		} else if ($data['user_type'] == 'A') {
 			Attorney::create(array(
 				'user_id' => $user->id,
 				'name' => $data['name'],
@@ -296,7 +303,14 @@ class UserController extends Controller
 
 		$user = User::where('email', $data['email'])->first();
 
-		if ($user->user_type == 'A') {
+		if ($user->user_type == 'S') {
+			$admins = User::where('user_type', 'S')->orderBy('id', 'DESC')->get();
+
+			return response()->json([
+				'status' => 'success',
+				'admins' => $admins
+			], 200);
+		} else if ($user->user_type == 'A') {
 			$attorney = Attorney::where('user_id', $user->id)->first();
 
 			$data['signature'] = $attorney->signature;
@@ -418,6 +432,16 @@ class UserController extends Controller
 		return response()->json([
 			'status' => 'success',
 			'attorneys' => $attorneys
+		], 200);
+	}
+
+	public function admins()
+	{
+		$admins = User::where('user_type', 'S')->orderBy('id', 'DESC')->get();
+
+		return response()->json([
+			'status' => 'success',
+			'admins' => $admins
 		], 200);
 	}
 }

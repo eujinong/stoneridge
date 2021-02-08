@@ -70,6 +70,15 @@ class SideBar extends Component {
                     </NavItem>
                   )
                 }
+                {
+                  user_type == 'S' && (
+                    <NavItem>
+                      <NavLink tag={Link} to="/superadmins">
+                        <i className="mr-2 fa fa-user-secret"></i> Supder Admin List
+                      </NavLink>
+                    </NavItem>
+                  )
+                }
                 <NavItem>
                   <a className="nav-link" onClick={this.handleLogout}>
                     <i className="mr-2 fa fa-sign-out"></i> Log out

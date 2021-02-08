@@ -27,6 +27,8 @@ Route::namespace('Api')->group(function () {
 
         Route::get('attorneys', 'UserController@attorneys');
 
+        Route::Get('admins', 'UserController@admins');
+
         Route::get('bonds', 'BondController@index');
         Route::get('bond/{id}', 'BondController@get');
         Route::post('bond','BondController@store');
