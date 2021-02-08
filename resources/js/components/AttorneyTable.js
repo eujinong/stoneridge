@@ -180,14 +180,14 @@ class AttorneyTable extends Component {
                           className="label"
                           style={{backgroundColor: '#00D994'}}
                         >
-                          Active
+                          Activate
                         </span>
                       :
                         <span
                           className="label"
                           style={{backgroundColor: '#FF0000'}}
                         >
-                          Pending
+                          Deactivate
                         </span>
                     }
                   </Table.Cell>
