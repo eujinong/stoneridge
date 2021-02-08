@@ -5,6 +5,7 @@ import {
   Row, Col,
   FormGroup, Input, Button
 } from 'reactstrap';
+import { NotificationContainer, NotificationManager } from 'react-notifications';
 
 import Api from '../../apis/app';
 
@@ -68,6 +69,16 @@ class Bond extends Component {
     });
   }
 
+  setNotifications(type, message) {
+    switch (type) {
+      case 'success':
+        NotificationManager.success(message, '', 3000);
+        break;
+      default:
+        break;
+    }
+  }
+
   handleView(id) {
     const { bonds } = this.state;
 
@@ -90,8 +101,16 @@ class Bond extends Component {
     this.props.history.push('my-bonds/detail', id);
   }
 
-  handleSend() {
-    
+  async handleSend(bond_no) {
+    const data = await Api.get(`send-bond/${bond_no}`);
+    const { response } = data;
+    switch (response.status) {
+      case 200:
+        this.setNotifications('success', 'Your bond request sent successfully.');
+        break;
+      default:
+        break;
+    }
   }
 
   handleDelete(id) {
@@ -183,6 +202,8 @@ class Bond extends Component {
             </div>
           </div>
         </div>
+
+        <NotificationContainer />
 
         <Modal
           isOpen={showBond}
