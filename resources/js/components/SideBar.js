@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component, Fragment } from 'react';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import {
@@ -51,6 +51,15 @@ class SideBar extends Component {
           {
             (user_type == 'S' || user_type == 'M') && (
               <Navbar>
+                {
+                  user_type == 'S' && (
+                    <NavItem>
+                      <NavLink tag={Link} to="/profile">
+                        <i className="mr-2 fa fa-user"></i> My Profile
+                      </NavLink>
+                    </NavItem>
+                  )
+                }
                 <NavItem>
                   <NavLink tag={Link} to="/clients">
                     <i className="mr-2 fa fa-users"></i> Portal Clients
@@ -63,20 +72,28 @@ class SideBar extends Component {
                 </NavItem>
                 {
                   user_type == 'S' && (
-                    <NavItem>
-                      <NavLink tag={Link} to="/attorneys">
-                        <i className="mr-2 fa fa-list"></i> Attorney List
-                      </NavLink>
-                    </NavItem>
-                  )
-                }
-                {
-                  user_type == 'S' && (
-                    <NavItem>
-                      <NavLink tag={Link} to="/superadmins">
-                        <i className="mr-2 fa fa-user-secret"></i> Supder Admin List
-                      </NavLink>
-                    </NavItem>
+                    <Fragment>
+                      <NavItem>
+                        <NavLink tag={Link} to="/my-actions">
+                          <i className="mr-2 fa fa-list"></i> Approve Request
+                        </NavLink>
+                      </NavItem>
+                      <NavItem>
+                        <NavLink tag={Link} to="/my-clients">
+                          <i className="mr-2 fa fa-users"></i> My Clients
+                        </NavLink>
+                      </NavItem>
+                      <NavItem>
+                        <NavLink tag={Link} to="/attorneys">
+                          <i className="mr-2 fa fa-list"></i> Attorney List
+                        </NavLink>
+                      </NavItem>
+                      <NavItem>
+                        <NavLink tag={Link} to="/superadmins">
+                          <i className="mr-2 fa fa-user-secret"></i> Super Admin List
+                        </NavLink>
+                      </NavItem>
+                    </Fragment>
                   )
                 }
                 <NavItem>

@@ -139,7 +139,7 @@ class Profile extends Component {
                     )
                   }
                   {
-                    user.user_type == 'A' && (
+                    (user.user_type == 'S' || user.user_type == 'A') && (
                       <Table unstackable singleLine>
                         <Table.Body>
                           <Table.Row>

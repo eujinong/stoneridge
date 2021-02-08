@@ -156,7 +156,7 @@ class UserController extends Controller
 			);
 		}
 
-		if ($data['user_type'] == 'A') {
+		if ($data['user_type'] == 'S' || $data['user_type'] == 'A') {
 			$data['signature'] = "";
 
 			$base64_image = $request->input('signature');
@@ -245,7 +245,17 @@ class UserController extends Controller
 		));
 
 		if ($data['user_type'] == 'S') {
-			$admins = User::where('user_type', 'S')->orderBy('id', 'DESC')->get();
+			Attorney::create(array(
+				'user_id' => $user->id,
+				'name' => $data['name'],
+				'signature' => $data['signature']
+			));
+
+			$admins = Attorney::leftJoin('users', 'users.id', '=', 'attorneys.user_id')
+									->where('users.user_type', 'S')
+									->select('users.*', 'attorneys.name', 'attorneys.signature')
+									->orderBy('users.id', 'DESC')
+									->get();
 
 			return response()->json([
 				'status' => 'success',
@@ -313,14 +323,7 @@ class UserController extends Controller
 					'active' => $data['active']
 				));
 
-		if ($user->user_type == 'S') {
-			$admins = User::where('user_type', 'S')->orderBy('id', 'DESC')->get();
-
-			return response()->json([
-				'status' => 'success',
-				'admins' => $admins
-			], 200);
-		} else if ($user->user_type == 'A') {
+		if ($user->user_type == 'S' || $user->user_type == 'A') {
 			$attorney = Attorney::where('user_id', $user->id)->first();
 
 			$data['signature'] = $attorney->signature;
@@ -375,7 +378,26 @@ class UserController extends Controller
 					);
 				}
 			}
+		}
 
+		if ($user->user_type == 'S') {
+			Attorney::where('user_id', $user->id)
+						->update(array(
+							'name' => $data['name'],
+							'signature' => $data['signature']
+						));
+
+			$admins = Attorney::leftJoin('users', 'users.id', '=', 'attorneys.user_id')
+									->where('users.user_type', 'S')
+									->select('users.*', 'attorneys.name', 'attorneys.signature')
+									->orderBy('users.id', 'DESC')
+									->get();
+
+			return response()->json([
+				'status' => 'success',
+				'admins' => $admins
+			], 200);
+		} else if ($user->user_type == 'A') {
 			Attorney::where('user_id', $user->id)
 						->update(array(
 							'name' => $data['name'],
@@ -447,7 +469,11 @@ class UserController extends Controller
 
 	public function admins()
 	{
-		$admins = User::where('user_type', 'S')->orderBy('id', 'DESC')->get();
+		$admins = Attorney::leftJoin('users', 'users.id', '=', 'attorneys.user_id')
+											->where('users.user_type', 'S')
+											->select('users.*', 'attorneys.name', 'attorneys.signature')
+											->orderBy('users.id', 'DESC')
+											->get();
 
 		return response()->json([
 			'status' => 'success',

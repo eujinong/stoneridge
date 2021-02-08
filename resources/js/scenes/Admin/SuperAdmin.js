@@ -27,8 +27,10 @@ class SuperAdmin extends Component {
       viewItem: [],
       editable: false,
       editItem: [],
+      imagePreviewUrl: '',
       showModal: false,
       email: '',
+      name: '',
       validate: true
     }
 
@@ -76,6 +78,21 @@ class SuperAdmin extends Component {
     }
   }
 
+  handleImageChange(e) {
+    e.preventDefault();
+
+    let reader = new FileReader();
+    let file = e.target.files[0];
+
+    reader.onloadend = () => {
+      this.setState({
+        imagePreviewUrl: reader.result
+      });
+    }
+
+    reader.readAsDataURL(file)
+  }
+
   handleFilter(str) {
     const { admins } = this.state;
 
@@ -90,7 +107,11 @@ class SuperAdmin extends Component {
   }
 
   async addAdmin() {
-    const { email } = this.state;
+    const {
+      email,
+      name,
+      imagePreviewUrl
+    } = this.state;
 
     const re = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
     const validate = re.test(String(email).toLowerCase());
@@ -102,6 +123,8 @@ class SuperAdmin extends Component {
     if (validate) {
       const params = {
         email,
+        name,
+        signature: imagePreviewUrl,
         user_type: 'S'
       }
 
@@ -125,6 +148,7 @@ class SuperAdmin extends Component {
           this.setState({
             admins,
             filtered: admins,
+            imagePreviewUrl: '',
             showModal: false
           });
           
@@ -162,10 +186,13 @@ class SuperAdmin extends Component {
   }
 
   async updateAdmin() {
-    const { editItem } = this.state;
+    const { editItem, imagePreviewUrl } = this.state;
 
     const params = {
+      user_type: 'S',
       email: editItem.email,
+      name: editItem.name,
+      signature: imagePreviewUrl,
       active: editItem.active
     }
 
@@ -189,6 +216,7 @@ class SuperAdmin extends Component {
           this.setState({
             admins,
             filtered: admins,
+            imagePreviewUrl: '',
             editable: false
           });
 
@@ -211,10 +239,17 @@ class SuperAdmin extends Component {
       viewItem,
       editable,
       editItem,
+      imagePreviewUrl,
       showModal,
       email,
+      name,
       validate
     } = this.state;
+
+    let $imagePreview = null;
+    if (imagePreviewUrl != '') {
+      $imagePreview = (<img src={imagePreviewUrl} />);
+    }
 
     return (
       <div className={showMenu ? 'd-flex show-menu' : 'd-flex hide-menu'}>
@@ -270,6 +305,11 @@ class SuperAdmin extends Component {
             Add Super Admin
           </ModalHeader>
           <ModalBody>
+            <Label>Name</Label>
+            <Input
+              type="text"
+              onChange={(val) => this.setState({name: val.target.value})}
+            />
             {
               validate ? (
                 <Label className="mt-3">Email</Label>
@@ -282,6 +322,15 @@ class SuperAdmin extends Component {
               type="text"
               onChange={(val) => this.setState({email: val.target.value})}
             />
+            <Label className="mt-3">Select Signature</Label>
+            <Input
+              className="fileInput" 
+              type="file" 
+              onChange={(e)=>this.handleImageChange(e)}
+            />
+            <div className="imagePreview">
+              {$imagePreview}
+            </div>
           </ModalBody>
           <ModalFooter>
             <Button
@@ -310,6 +359,11 @@ class SuperAdmin extends Component {
           </ModalHeader>
           <ModalBody>
             <Row>
+              <Col sm="2"><Label>Name</Label></Col>
+              <Col sm="10"><Label>{viewItem.name}</Label></Col>
+            </Row>
+            <hr />
+            <Row>
               <Col sm="2"><Label>Email</Label></Col>
               <Col sm="10"><Label>{viewItem.email}</Label></Col>
             </Row>
@@ -317,7 +371,7 @@ class SuperAdmin extends Component {
             <Row>
               <Col sm="2"><Label>Status</Label></Col>
               <Col sm="10">
-                <Label>{viewItem.active == 1 ? 'Active' : 'Pending'}</Label>
+                <Label>{viewItem.active == 1 ? 'Activate' : 'Deactivate'}</Label>
               </Col>
             </Row>
           </ModalBody>
@@ -341,6 +395,21 @@ class SuperAdmin extends Component {
             Edit Super Admin
           </ModalHeader>
           <ModalBody>
+            <FormGroup>
+              <Label>Name</Label>
+              <Input
+                type="text"
+                value={editItem.name}
+                onChange={(val) => {
+                  let { editItem } = this.state;
+                  editItem.name = val.target.value;
+
+                  this.setState({
+                    editItem
+                  });
+                }}
+              />
+            </FormGroup>
             <FormGroup>
               <Label>Email</Label>
               <Input type="text" value={editItem.email} disabled />

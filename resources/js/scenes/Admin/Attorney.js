@@ -317,7 +317,6 @@ class Attorney extends Component {
             View Attorney
           </ModalHeader>
           <ModalBody>
-            <hr />
             <Row>
               <Col sm="2"><Label>Name</Label></Col>
               <Col sm="10"><Label>{viewItem.name}</Label></Col>
@@ -331,7 +330,7 @@ class Attorney extends Component {
             <Row>
               <Col sm="2"><Label>Status</Label></Col>
               <Col sm="10">
-                <Label>{viewItem.active == 1 ? 'Active' : 'Pending'}</Label>
+                <Label>{viewItem.active == 1 ? 'Activate' : 'Deactivate'}</Label>
               </Col>
             </Row>
             <hr />

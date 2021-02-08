@@ -20,6 +20,16 @@ class CreateAttorneysTable extends Migration
             $table->string('signature', 256);
             $table->timestamps();
         });
+
+        DB::table('attorneys')->insert(
+            array(
+                'user_id' => 1,
+                'name' => 'SuperAdmin',
+                'signature' => '/',
+                'created_at' => date('Y-m-d H:i:s'),
+                'updated_at' => date('Y-m-d H:i:s')
+            )
+        );
     }
 
     /**

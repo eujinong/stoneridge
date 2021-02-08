@@ -21,17 +21,6 @@ class CreateClientsTable extends Migration
             $table->bigInteger('producer')->nullable();
             $table->timestamps();
         });
-
-        DB::table('clients')->insert(
-            array(
-                'user_id' => 1,
-                'legal' => 'SuperAdmin',
-                'attorney' => null,
-                'producer' => null,
-                'created_at' => date('Y-m-d H:i:s'),
-                'updated_at' => date('Y-m-d H:i:s')
-            )
-        );
     }
 
     /**

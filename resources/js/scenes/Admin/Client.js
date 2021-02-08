@@ -195,7 +195,7 @@ class Client extends Component {
               str += '0';
             }
 
-            clients[i].id = str + id;
+            clients[i].index = str + id;
           }
 
           let producers = [];
