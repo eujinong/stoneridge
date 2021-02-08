@@ -49,6 +49,10 @@ body {
           width: 100%;
         }
       }
+
+      .custom-control {
+        z-index: unset;
+      }
     }
 
     .modal-footer {

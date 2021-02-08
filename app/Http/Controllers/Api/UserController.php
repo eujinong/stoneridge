@@ -277,11 +277,10 @@ class UserController extends Controller
 
 			$clients = Client::leftJoin('users', 'users.id', '=', 'clients.user_id')
 							->leftJoin('attorneys', 'attorneys.user_id', '=', 'clients.attorney')
-							->leftJoin('clients AS producers', 'producers.user_id', '=', 'clients.producer')
 							->where('users.user_type', 'M')
 							->orWhere('users.user_type', 'N')
-							->select('users.*', 'clients.legal', 'clients.attorney',
-											'producers.legal AS producer', 'attorneys.name')
+							->select('users.*', 'attorneys.name',
+											'clients.legal', 'clients.attorney', 'clients.producer')
 							->orderBy('users.id', 'DESC')
 							->get();
 
@@ -298,6 +297,7 @@ class UserController extends Controller
 
 		User::where('email', $data['email'])
 				->update(array(
+					'user_type' => $data['user_type'],
 					'active' => $data['active']
 				));
 
@@ -384,16 +384,17 @@ class UserController extends Controller
 		} else {
 			Client::where('user_id', $user->id)
 						->update(array(
-							'legal' => $data['legal']
+							'legal' => $data['legal'],
+							'attorney' => $data['attorney'],
+							'producer' => $data['producer']
 						));
 
 			$clients = Client::leftJoin('users', 'users.id', '=', 'clients.user_id')
 						->leftJoin('attorneys', 'attorneys.user_id', '=', 'clients.attorney')
-						->leftJoin('clients AS producers', 'producers.user_id', '=', 'clients.producer')
 						->where('users.user_type', 'M')
 						->orWhere('users.user_type', 'N')
-						->select('users.*', 'clients.legal', 'clients.attorney',
-										 'producers.legal AS producer', 'attorneys.name')
+						->select('users.*', 'attorneys.name',
+										 'clients.legal', 'clients.attorney', 'clients.producer')
 						->orderBy('users.id', 'DESC')
 						->get();
 
@@ -408,11 +409,10 @@ class UserController extends Controller
 	{
 		$clients = Client::leftJoin('users', 'users.id', '=', 'clients.user_id')
 						->leftJoin('attorneys', 'attorneys.user_id', '=', 'clients.attorney')
-						->leftJoin('clients AS producers', 'producers.user_id', '=', 'clients.producer')
 						->where('users.user_type', 'M')
 						->orWhere('users.user_type', 'N')
-						->select('users.*', 'clients.legal', 'clients.attorney',
-										 'producers.legal AS producer', 'attorneys.name')
+						->select('users.*', 'attorneys.name',
+										 'clients.legal', 'clients.attorney', 'clients.producer')
 						->orderBy('users.id', 'DESC')
 						->get();
 

@@ -69,7 +69,7 @@ class Client extends Component {
             str += '0';
           }
 
-          clients[i].id = str + id;
+          clients[i].index = str + id;
         }
 
         let producers = [];
@@ -246,54 +246,57 @@ class Client extends Component {
     const { editItem } = this.state;
 
     const params = {
+      user_type: editItem.user_type,
       email: editItem.email,
       legal: editItem.legal,
+      attorney: editItem.user_type == 'N' ? editItem.attorney : null,
+      producer: editItem.user_type == 'N' ? editItem.producer : null,
       active: editItem.active
     }
 
     const data = await Api.put('update-user', params);
-      const { response, body } = data;
-      switch (response.status) {
-        case 200:
-          let producers = [];
+    const { response, body } = data;
+    switch (response.status) {
+      case 200:
+        let producers = [];
+        
+        const clients = body.clients;
+        for (let i = 0; i < clients.length; i++) {
+          if (clients[i].user_type == 'N' && clients[i].active == 1) {
+            producers.push({
+              value: clients[i].id,
+              label: clients[i].legal
+            });
+          }
+
+          let id = '' + clients[i].id;
           
-          const clients = body.clients;
-          for (let i = 0; i < clients.length; i++) {
-            if (clients[i].user_type == 'N' && clients[i].active == 1) {
-              producers.push({
-                value: clients[i].id,
-                label: clients[i].legal
-              });
-            }
-
-            let id = '' + clients[i].id;
-            
-            let str = '';
-            for (let j = 0; j < 5 - id.length; j++) {
-              str += '0';
-            }
-
-            clients[i].id = str + id;
+          let str = '';
+          for (let j = 0; j < 5 - id.length; j++) {
+            str += '0';
           }
 
-          this.setState({
-            producers,
-            clients,
-            filtered: clients,
-            editable: false
-          });
+          clients[i].index = str + id;
+        }
 
-          if (editItem.user_type == 'N') {
-            this.setNotifications('success', 'The client is updated successfully.');
-          } else {
-            this.setNotifications('success', 'The admin is updated successfully.');
-          }
-          break;
-        case 406:
-          this.setNotifications('error', body.message);
-        default:
-          break;
-      }
+        this.setState({
+          producers,
+          clients,
+          filtered: clients,
+          editable: false
+        });
+
+        if (editItem.user_type == 'N') {
+          this.setNotifications('success', 'The client is updated successfully.');
+        } else {
+          this.setNotifications('success', 'The admin is updated successfully.');
+        }
+        break;
+      case 406:
+        this.setNotifications('error', body.message);
+      default:
+        break;
+    }
   }
 
   render() {
@@ -488,7 +491,18 @@ class Client extends Component {
               (user && user.user_type == 'S') && (
                 <FormGroup check inline>
                   <Label check>
-                    <Input type="radio" checked={editItem.user_type == 'M'} disabled />
+                    <Input
+                      type="radio"
+                      checked={editItem.user_type == 'M'}
+                      onChange={() => {
+                        let { editItem } = this.state;
+                        editItem.user_type = 'M';
+      
+                        this.setState({
+                          editItem
+                        });
+                      }}
+                    />
                     {' '}Admin User
                   </Label>
                 </FormGroup>
@@ -496,7 +510,18 @@ class Client extends Component {
             }
             <FormGroup check inline>
               <Label check>
-                <Input type="radio" checked={editItem.user_type == 'N'} disabled />
+                <Input
+                  type="radio"
+                  checked={editItem.user_type == 'N'}
+                  onChange={() => {
+                    let { editItem } = this.state;
+                    editItem.user_type = 'N';
+  
+                    this.setState({
+                      editItem
+                    });
+                  }}
+                />
                 {' '}Normal User
               </Label>
             </FormGroup>
@@ -522,22 +547,52 @@ class Client extends Component {
             </FormGroup>
             {
               editItem.user_type == 'N' && (
-                <FormGroup>
-                  <Label>Attorney</Label>
-                  <Input type="text" value={editItem.name} disabled />
-                </FormGroup>
+                <div className="form-group">
+                  <Select
+                    isSearchable={true}
+                    isMulti={false}
+                    placeholder="Choose the attorney"
+                    options={attorneys}
+                    value={
+                      attorneys.filter(
+                        item => item.value == editItem.attorney
+                      )
+                    }
+                    onChange={(val) => {
+                      let { editItem } = this.state;
+                      editItem.attorney = val.value;
+
+                      this.setState({
+                        editItem
+                      });
+                    }}
+                  />
+                </div>
               )
             }
             {
               editItem.user_type == 'N' && (
-                <FormGroup>
-                  <Label>Attorney</Label>
-                  <Input
-                    type="text"
-                    value={editItem.producer === null ? 'Not set' : editItem.producer}
-                    disabled
+                <div className="form-group">
+                  <Select
+                    isSearchable={true}
+                    isMulti={false}
+                    placeholder="Choose the producer"
+                    options={producers}
+                    value={
+                      producers.filter(
+                        item => item.value == editItem.producer
+                      )
+                    }
+                    onChange={(val) => {
+                      let { editItem } = this.state;
+                      editItem.producer = val.value;
+
+                      this.setState({
+                        editItem
+                      });
+                    }}
                   />
-                </FormGroup>
+                </div>
               )
             }
             <FormGroup>
@@ -566,7 +621,10 @@ class Client extends Component {
             </Button>
             <Button
               color="primary"
-              disabled={editItem.legal == ''}
+              disabled={
+                editItem.legal == '' ||
+                (editItem.user_type == 'N' && (editItem.attorney == '' || !editItem.attorney))
+              }
               onClick={this.updateClient.bind(this)}
             >
               Save
