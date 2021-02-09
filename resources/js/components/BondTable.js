@@ -159,6 +159,17 @@ class BondTable extends Component {
             >
               Created On
             </Table.HeaderCell>
+            {
+              attorney && (
+                <Table.HeaderCell
+                  className="text-center"
+                  sorted={column === 'created_at' ? direction : null}
+                  onClick={this.handleSort.bind(this, 'created_at')}
+                >
+                  Status
+                </Table.HeaderCell>
+              )
+            }
             <Table.HeaderCell className="text-center">
               Action
             </Table.HeaderCell>
@@ -178,6 +189,13 @@ class BondTable extends Component {
                   <Table.Cell className="text-center">
                     {item.created_at.substring(0, 10) + ' ' + item.created_at.substring(11, 16)}
                   </Table.Cell>
+                  {
+                    attorney && (
+                      <Table.Cell className="text-center">
+                        {item.status.charAt(0).toUpperCase() + item.status.slice(1)}
+                      </Table.Cell>
+                    )
+                  }
                   <Table.Cell className="text-center">
                     <a
                       className="mx-2"
@@ -193,12 +211,14 @@ class BondTable extends Component {
                     </a>
                     {
                       attorney ? (
-                        <a
-                          className="mx-2"
-                          onClick={() => onApprove(item.id)}
-                        >
-                          <i className="fa fa-check"></i>
-                        </a>
+                        item.status == 'sent' && (
+                          <a
+                            className="mx-2"
+                            onClick={() => onApprove(item.id)}
+                          >
+                            <i className="fa fa-check"></i>
+                          </a>
+                        )
                       ) : (
                         <Fragment>
                           <a
@@ -227,7 +247,7 @@ class BondTable extends Component {
               ))
             ) : (
               <Table.Row>
-                <Table.Cell className="text-center" colSpan={4}>
+                <Table.Cell className="text-center" colSpan={attorney ? 5 : 4}>
                   <h5>No Bonds</h5>
                 </Table.Cell>
               </Table.Row>
@@ -254,7 +274,7 @@ class BondTable extends Component {
                     }}
                   />
                 </Table.HeaderCell>
-                <Table.HeaderCell colSpan="3">
+                <Table.HeaderCell colSpan={attorney ? 4 : 3}>
                   <Menu floated="right" pagination>
                     <Pagination
                       activePage={activePage}

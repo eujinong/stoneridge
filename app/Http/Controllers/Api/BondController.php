@@ -229,13 +229,18 @@ class BondController extends Controller
     $data['signature'] = $attorney->signature;
     $data['name'] = $attorney->name;
 
-    Storage::disk('local')->delete($bond_no . '.pdf');
+    Storage::disk('local')->delete($data['bond_no'] . '.pdf');
 
     $pdf = PDF::loadView('pdf',array('data' => $data));
-    $pdf->save('files/' . $bond_no . '.pdf');
+    $pdf->save('files/' . $data['bond_no'] . '.pdf');
+
+    $bonds = Bond::where('client_id', $data['client_id'])
+                ->orderBy('id', 'DESC')
+                ->get();
 
     return response()->json([
-			'status' => 'success'
+			'status' => 'success',
+      'bonds' => $bonds
 		], 200);
   }
 

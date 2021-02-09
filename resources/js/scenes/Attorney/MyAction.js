@@ -45,9 +45,7 @@ class MyAction extends Component {
     const { response, body } = data;
     switch (response.status) {
       case 200:
-        let bonds = body.bonds.filter(
-          item => item.attorney == user.id && item.status == 'sent'
-        );
+        let bonds = body.bonds.filter(item => item.attorney == user.id);
 
         this.setState({
           bonds,
@@ -103,10 +101,15 @@ class MyAction extends Component {
 
   async handleApprove(id) {
     const data = await Api.get(`approve-bond/${id}`);
-    const { response } = data;
+    const { response, body } = data;
     switch (response.status) {
       case 200:
         this.setNotifications('success', 'The bond request approved successfully.');
+
+        this.setState({
+          bonds: body.bonds,
+          filtered: body.bonds
+        });
         break;
       default:
         break;
