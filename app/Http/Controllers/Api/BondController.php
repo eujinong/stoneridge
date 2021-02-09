@@ -232,4 +232,32 @@ class BondController extends Controller
 			'status' => 'success'
 		], 200);
   }
+
+  public function filter($id)
+  {
+    $user = User::find($id);
+
+    $bonds = array();
+
+    if ($user->user_type == 'S') {
+      $bonds = Bond::get();
+    } else {
+      $clients = Client::where('producer', $id)->get();
+
+      $ids = array();
+      foreach ($clients as $client) {
+        array_push($ids, $client->user_id);
+      }
+
+      
+      if (sizeof($ids) > 0) {
+        $bonds = Bond::whereIn('client_id', $ids)->get();
+      }
+    }
+
+    return response()->json([
+			'status' => 'success',
+      'bonds' => $bonds
+		], 200);
+  }
 }

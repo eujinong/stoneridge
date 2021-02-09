@@ -36,5 +36,6 @@ Route::namespace('Api')->group(function () {
         Route::delete('bond/{id}', 'BondController@destroy');
         Route::get('send-bond/{id}', 'BondController@send');
         Route::get('approve-bond/{id}', 'BondController@approve');
+        Route::get('filter-bonds/{id}', 'BondController@filter');
     });
 });

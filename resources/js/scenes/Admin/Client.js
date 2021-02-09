@@ -75,7 +75,7 @@ class Client extends Component {
 
         let producers = [];
         let result = body.clients.filter(
-          client => client.user_type == 'N' && client.active == 1
+          client => client.user_type == 'M' && client.active == 1
         );
 
         for (let i = 0; i < result.length; i++) {
@@ -200,7 +200,7 @@ class Client extends Component {
 
           let producers = [];
           let result = body.clients.filter(
-            client => client.user_type == 'N' && client.active == 1
+            client => client.user_type == 'M' && client.active == 1
           );
 
           for (let i = 0; i < result.length; i++) {
@@ -263,7 +263,7 @@ class Client extends Component {
         
         const clients = body.clients;
         for (let i = 0; i < clients.length; i++) {
-          if (clients[i].user_type == 'N' && clients[i].active == 1) {
+          if (clients[i].user_type == 'M' && clients[i].active == 1) {
             producers.push({
               value: clients[i].id,
               label: clients[i].legal

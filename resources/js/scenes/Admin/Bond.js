@@ -42,7 +42,7 @@ class Bond extends Component {
       user
     });
     
-    const data = await Api.get('bonds');
+    const data = await Api.get(`filter-bonds/${user.id}`);
     const { response, body } = data;
     switch (response.status) {
       case 200:
