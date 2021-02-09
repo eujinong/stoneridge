@@ -331,7 +331,7 @@ class Attorney extends Component {
             <Row>
               <Col sm="2"><Label>Status</Label></Col>
               <Col sm="10">
-                <Label>{viewItem.active == 1 ? 'Activate' : 'Deactivate'}</Label>
+                <Label>{viewItem.active == 1 ? 'Active' : 'Deactive'}</Label>
               </Col>
             </Row>
             <hr />
@@ -397,7 +397,7 @@ class Attorney extends Component {
               <CustomInput
                 type="switch"
                 id="status"
-                label={editItem.active == 1 ? 'Deactive Attorney' : 'Active Attorney'}
+                label={editItem.active == 1 ? 'Deactivate Attorney' : 'Activate Attorney'}
                 checked={editItem.active == 1 ? true : false}
                 onChange={(val) => {
                   let { editItem } = this.state;
