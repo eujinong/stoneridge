@@ -190,6 +190,7 @@ class SuperAdmin extends Component {
 
     const params = {
       user_type: 'S',
+      id: editItem.id,
       email: editItem.email,
       name: editItem.name,
       signature: imagePreviewUrl,
@@ -412,7 +413,18 @@ class SuperAdmin extends Component {
             </FormGroup>
             <FormGroup>
               <Label>Email</Label>
-              <Input type="text" value={editItem.email} disabled />
+              <Input
+                type="text"
+                value={editItem.email}
+                onChange={(val) => {
+                  let { editItem } = this.state;
+                  editItem.email = val.target.value;
+
+                  this.setState({
+                    editItem
+                  });
+                }}
+              />
             </FormGroup>
             <FormGroup>
               <CustomInput

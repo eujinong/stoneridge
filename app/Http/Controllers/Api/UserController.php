@@ -305,7 +305,21 @@ class UserController extends Controller
 	{
 		$data = $request->all();
 
-		$user = User::where('email', $data['email'])->first();
+		$exist = User::where('email', $data['email'])
+								->where('id', '!=', $data['id'])
+								->first();
+		
+		if (!is_null($exist)) {
+			return response()->json(
+				[
+					'status' => 'error',
+					'message' => 'The email is already registerd. Please try again with another.'
+				],
+				406
+			);
+		}
+
+		$user = User::find($data['id']);
 
 		if ($user->user_type == 'N' && $data['user_type'] == 'M') {
 			$bonds = Bond::where('client_id', $user->id)->get();
@@ -317,8 +331,9 @@ class UserController extends Controller
 			Bond::where('client_id', $user->id)->delete();
 		}
 
-		User::where('email', $data['email'])
+		User::where('id', $data['id'])
 				->update(array(
+					'email' => $data['email'],
 					'user_type' => $data['user_type'],
 					'active' => $data['active']
 				));

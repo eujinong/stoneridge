@@ -247,6 +247,7 @@ class Client extends Component {
     const { editItem } = this.state;
 
     const params = {
+      id: editItem.id,
       user_type: editItem.user_type,
       email: editItem.email,
       legal: editItem.legal,
@@ -527,7 +528,18 @@ class Client extends Component {
             <hr />
             <FormGroup>
               <Label>Email</Label>
-              <Input type="text" value={editItem.email} disabled />
+              <Input
+                type="text"
+                value={editItem.email}
+                onChange={(val) => {
+                  let { editItem } = this.state;
+                  editItem.email = val.target.value;
+
+                  this.setState({
+                    editItem
+                  });
+                }}
+              />
             </FormGroup>
             <FormGroup>
               <Label>Legal Name</Label>
