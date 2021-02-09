@@ -227,6 +227,16 @@ class EditBond extends Component {
     }
   }
 
+  handleExit() {
+    const { user } = this.state;
+    
+    if (user.user_type == 'N') {
+      this.props.history.push('my-bonds');
+    } else {
+      this.props.history.push('/bonds');
+    }
+  }
+
   render() {
     const {
       showMenu,
@@ -608,22 +618,28 @@ class EditBond extends Component {
               <Row>
                 <Col sm={12} className="text-center">
                   <Button
-                    className="btn btn-primary px-4"
+                    className="btn btn-primary px-4 mr-1"
                     onClick={this.handleSave.bind(this, 'save')}
                   >
                     <i className="fa fa-save mr-2"></i> Save
                   </Button>
                   <Button
-                    className="btn btn-success px-4 mx-2"
+                    className="btn btn-success px-4 mx-1"
                     onClick={this.handleSave.bind(this, 'print')}
                   >
                     <i className="fa fa-print mr-2"></i> Print
                   </Button>
                   <Button
-                    className="btn btn-info px-4"
+                    className="btn btn-info px-4 mx-1"
                     onClick={this.handleSave.bind(this, 'send')}
                   >
                     <i className="fa fa-envelope mr-2"></i> Send
+                  </Button>
+                  <Button
+                    className="btn btn-secondary px-4 ml-1"
+                    onClick={this.handleExit.bind(this)}
+                  >
+                    <i className="fa fa-times mr-2"></i> Exit
                   </Button>
                 </Col>
               </Row>
