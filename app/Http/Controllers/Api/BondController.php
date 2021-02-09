@@ -187,8 +187,10 @@ class BondController extends Controller
     $bond = Bond::leftJoin('users', 'users.id', '=', 'bonds.client_id')
                 ->leftJoin('clients', 'clients.user_id', '=', 'bonds.client_id')
                 ->leftJoin('users AS att', 'att.id', '=', 'clients.attorney')
+                ->leftJoin('users AS prod', 'prod.id', '=', 'clients.producer')
                 ->where('bonds.bond_no', $bond_no)
-                ->select('bonds.bond_no', 'users.email AS from', 'att.email AS to')
+                ->select('bonds.bond_no', 'users.email AS from',
+                         'att.email AS to_att', 'prod.email AS to_prod')
                 ->first();
 
     $message = "Hi\r\n";
@@ -199,7 +201,11 @@ class BondController extends Controller
 
 		$headers = "From: admin@stoneridge.com";
 
-    mail($bond['to'], "Welcome to StoneRidge", $message, $headers);
+    mail($bond['to_att'], "Welcome to StoneRidge", $message, $headers);
+
+    if (!is_null($bond['to_prod'])) {
+      mail($bond['to_prod'], "Welcome to StoneRidge", $message, $headers);
+    }
 
     Bond::where('bond_no', $bond_no)
         ->update(array(
